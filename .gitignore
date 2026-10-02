@@ -23,6 +23,11 @@ dist-ssr
 *.local
 coverage/
 
+# Supabase local state
+/supabase/.branches/
+/supabase/.temp/
+/supabase/volumes/
+
 # Frontend workspace outputs
 /frontend/node_modules/
 /frontend/dist/

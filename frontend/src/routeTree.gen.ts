@@ -16,7 +16,6 @@ import { Route as AuthenticatedConsoleRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedContactsRouteImport } from './routes/_authenticated/contacts'
 import { Route as AuthenticatedDevicesRouteImport } from './routes/_authenticated/devices'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
-import { Route as ApiPublicTelemetryRouteImport } from './routes/api/public/telemetry'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,12 +51,6 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ApiPublicTelemetryRoute = ApiPublicTelemetryRouteImport.update({
-  id: '/api/public/telemetry',
-  path: '/api/public/telemetry',
-  getParentRoute: () => rootRouteImport,
-} as any)
-
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
@@ -65,7 +58,6 @@ export interface FileRoutesByFullPath {
   '/contacts': typeof AuthenticatedContactsRoute
   '/devices': typeof AuthenticatedDevicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
-  '/api/public/telemetry': typeof ApiPublicTelemetryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -74,7 +66,6 @@ export interface FileRoutesByTo {
   '/contacts': typeof AuthenticatedContactsRoute
   '/devices': typeof AuthenticatedDevicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
-  '/api/public/telemetry': typeof ApiPublicTelemetryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -85,7 +76,6 @@ export interface FileRoutesById {
   '/_authenticated/contacts': typeof AuthenticatedContactsRoute
   '/_authenticated/devices': typeof AuthenticatedDevicesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
-  '/api/public/telemetry': typeof ApiPublicTelemetryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -96,7 +86,6 @@ export interface FileRouteTypes {
     | '/contacts'
     | '/devices'
     | '/settings'
-    | '/api/public/telemetry'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -105,7 +94,6 @@ export interface FileRouteTypes {
     | '/contacts'
     | '/devices'
     | '/settings'
-    | '/api/public/telemetry'
   id:
     | '__root__'
     | '/'
@@ -115,14 +103,12 @@ export interface FileRouteTypes {
     | '/_authenticated/contacts'
     | '/_authenticated/devices'
     | '/_authenticated/settings'
-    | '/api/public/telemetry'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
-  ApiPublicTelemetryRoute: typeof ApiPublicTelemetryRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -176,13 +162,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/api/public/telemetry': {
-      id: '/api/public/telemetry'
-      path: '/api/public/telemetry'
-      fullPath: '/api/public/telemetry'
-      preLoaderRoute: typeof ApiPublicTelemetryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -207,18 +186,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
-  ApiPublicTelemetryRoute: ApiPublicTelemetryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

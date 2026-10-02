@@ -10,7 +10,7 @@ Supabase Auth
 Supabase PostgreSQL
 Supabase Row Level Security
 Supabase Edge Functions
-Supabase Realtime
+Supabase Edge Function API
 Supabase scheduled jobs / Cron
 Zod
 Vitest
@@ -48,3 +48,5 @@ cd frontend
 npm i
 npm run dev
 ```
+
+The browser UI lives entirely under `frontend/`. It uses Supabase Auth for session management and invokes the typed API in `frontend/src/lib/api.ts`; all application data queries, mutations, authorization checks, and sensitive-data operations run in `supabase/functions/`. See [`supabase/functions/README.md`](supabase/functions/README.md) for deployment and secret configuration.

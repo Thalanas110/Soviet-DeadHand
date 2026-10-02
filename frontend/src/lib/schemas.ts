@@ -30,7 +30,10 @@ export const deviceTelemetrySchema = telemetrySchema; // posted by token-authent
 
 export const setPinsSchema = z
   .object({ current: z.string().max(8).optional(), checkin: pinSchema, duress: pinSchema })
-  .refine((v) => v.checkin !== v.duress, { message: "Duress PIN must differ from check-in PIN", path: ["duress"] });
+  .refine((v) => v.checkin !== v.duress, {
+    message: "Duress PIN must differ from check-in PIN",
+    path: ["duress"],
+  });
 
 export const contactSchema = z.object({
   alias: z.string().trim().min(1).max(40),
@@ -44,16 +47,24 @@ export const registerDeviceSchema = z.object({
   label: z.string().trim().min(1).max(40),
   kind: z.enum(["phone", "wearable"]),
 });
+export type ContactInput = z.infer<typeof contactSchema>;
+export type RegisterDeviceInput = z.infer<typeof registerDeviceSchema>;
 
 /** A heartbeat is only a complete safety heartbeat when it carries a fresh, plausible location sample. */
-export function isCompleteLocation(loc: LocationSample | null | undefined, now = Date.now()): boolean {
+export function isCompleteLocation(
+  loc: LocationSample | null | undefined,
+  now = Date.now(),
+): boolean {
   if (!loc) return false;
   if (!(loc.accuracy > 0 && loc.accuracy <= 5000)) return false;
   return loc.timestamp >= now - 10 * 60_000 && loc.timestamp <= now + 2 * 60_000;
 }
 
 export type LocationFreshness = "CURRENT" | "LAST_KNOWN" | "UNKNOWN";
-export function locationFreshness(receivedAt: string | null | undefined, now = Date.now()): LocationFreshness {
+export function locationFreshness(
+  receivedAt: string | null | undefined,
+  now = Date.now(),
+): LocationFreshness {
   if (!receivedAt) return "UNKNOWN";
   return now - new Date(receivedAt).getTime() <= 15 * 60_000 ? "CURRENT" : "LAST_KNOWN";
 }

@@ -5,10 +5,9 @@ import {
   createRootRouteWithContext,
   useRouter,
   HeadContent,
-  Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,9 +18,14 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="max-w-md text-center">
         <h1 className="font-display text-7xl text-primary glow-amber">404</h1>
-        <h2 className="mt-4 text-lg uppercase tracking-widest">Сектор не найден · Sector not found</h2>
+        <h2 className="mt-4 text-lg uppercase tracking-widest">
+          Сектор не найден · Sector not found
+        </h2>
         <div className="mt-6">
-          <Link to="/" className="inline-flex border border-primary px-4 py-2 text-sm uppercase tracking-widest text-primary hover:bg-primary hover:text-primary-foreground">
+          <Link
+            to="/"
+            className="inline-flex border border-primary px-4 py-2 text-sm uppercase tracking-widest text-primary hover:bg-primary hover:text-primary-foreground"
+          >
             Return to base
           </Link>
         </div>
@@ -37,8 +41,12 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="max-w-md text-center">
-        <h1 className="font-display text-xl uppercase tracking-widest text-destructive glow-alarm">Сбой связи · Link failure</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Something went wrong loading this page.</p>
+        <h1 className="font-display text-xl uppercase tracking-widest text-destructive glow-alarm">
+          Сбой связи · Link failure
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Something went wrong loading this page.
+        </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {
@@ -49,7 +57,10 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
           >
             Retry
           </button>
-          <a href="/" className="border border-border px-4 py-2 text-sm uppercase hover:bg-secondary">
+          <a
+            href="/"
+            className="border border-border px-4 py-2 text-sm uppercase hover:bg-secondary"
+          >
             Base
           </a>
         </div>
@@ -65,7 +76,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "theme-color", content: "#1a1c14" },
       { title: "Dead Hand — Personal Safety Monitoring" },
-      { name: "description", content: "Server-authoritative personal safety watchdog with covert duress alarm and emergency contact cascade." },
+      {
+        name: "description",
+        content:
+          "Server-authoritative personal safety watchdog with covert duress alarm and emergency contact cascade.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -80,25 +95,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
     ],
   }),
-  shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
-
-function RootShell({ children }: { children: ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  );
-}
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
@@ -115,6 +115,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <HeadContent />
       <Outlet />
       <Toaster theme="dark" position="top-center" />
     </QueryClientProvider>
