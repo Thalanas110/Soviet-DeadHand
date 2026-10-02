@@ -10,7 +10,7 @@ type Action = ReturnType<typeof actionSchema.parse>;
 function rpcResult(data: unknown, error: { message: string } | null) {
   if (error) {
     const known = error.message.match(
-      /(DEVICE_NOT_AUTHORIZED|REPLAY_REJECTED|PINS_NOT_CONFIGURED|PIN_REJECTED|LOCATION_REQUIRED|CHECK_IN_BEFORE_DISARM|PINS_MUST_DIFFER)/,
+    /(DEVICE_NOT_AUTHORIZED|REPLAY_REJECTED|PINS_NOT_CONFIGURED|PIN_REJECTED|LOCATION_REQUIRED|CHECK_IN_BEFORE_DISARM|PINS_MUST_DIFFER|INVALID_HEART_RATE)/,
     )?.[1];
     return { ok: false, error: known ?? "REQUEST_REJECTED" };
   }
@@ -75,6 +75,13 @@ async function callIngest(
     _loc_iv: location.iv,
     _loc_acc: location.acc,
     _loc_ts: location.ts,
+    _heart_rate_bpm: input.heartRateBpm ?? null,
+    _heart_rate_ts: input.heartRateTimestamp
+      ? new Date(input.heartRateTimestamp).toISOString()
+      : null,
+    _wearable_sync_ts: input.wearableSyncTimestamp
+      ? new Date(input.wearableSyncTimestamp).toISOString()
+      : null,
   });
   return rpcResult(data, error);
 }
@@ -150,6 +157,13 @@ async function execute(userId: string, token: string, input: Action) {
         _loc_iv: location.iv,
         _loc_acc: location.acc,
         _loc_ts: location.ts,
+        _heart_rate_bpm: input.heartRateBpm ?? null,
+        _heart_rate_ts: input.heartRateTimestamp
+          ? new Date(input.heartRateTimestamp).toISOString()
+          : null,
+        _wearable_sync_ts: input.wearableSyncTimestamp
+          ? new Date(input.wearableSyncTimestamp).toISOString()
+          : null,
         _pin: input.pin,
       });
       return rpcResult(data, error);

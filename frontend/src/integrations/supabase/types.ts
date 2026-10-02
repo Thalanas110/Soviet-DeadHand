@@ -87,6 +87,8 @@ export type Database = {
           client_ts: string | null;
           complete: boolean;
           device_id: string;
+          heart_rate_bpm: number | null;
+          heart_rate_ts: string | null;
           id: string;
           location_accuracy: number | null;
           location_enc: string | null;
@@ -97,6 +99,7 @@ export type Database = {
           seq: number;
           user_id: string;
           wearable_connected: boolean | null;
+          wearable_sync_ts: string | null;
         };
         Insert: {
           battery?: number | null;
@@ -104,6 +107,8 @@ export type Database = {
           client_ts?: string | null;
           complete: boolean;
           device_id: string;
+          heart_rate_bpm?: number | null;
+          heart_rate_ts?: string | null;
           id?: string;
           location_accuracy?: number | null;
           location_enc?: string | null;
@@ -114,6 +119,7 @@ export type Database = {
           seq: number;
           user_id: string;
           wearable_connected?: boolean | null;
+          wearable_sync_ts?: string | null;
         };
         Update: {
           battery?: number | null;
@@ -121,6 +127,8 @@ export type Database = {
           client_ts?: string | null;
           complete?: boolean;
           device_id?: string;
+          heart_rate_bpm?: number | null;
+          heart_rate_ts?: string | null;
           id?: string;
           location_accuracy?: number | null;
           location_enc?: string | null;
@@ -131,6 +139,7 @@ export type Database = {
           seq?: number;
           user_id?: string;
           wearable_connected?: boolean | null;
+          wearable_sync_ts?: string | null;
         };
         Relationships: [
           {
@@ -366,6 +375,8 @@ export type Database = {
           _charging: boolean;
           _client_ts: string;
           _device: string;
+          _heart_rate_bpm: number | null;
+          _heart_rate_ts: string | null;
           _loc_acc: number;
           _loc_enc: string;
           _loc_iv: string;
@@ -374,6 +385,7 @@ export type Database = {
           _seq: number;
           _user: string;
           _wearable: boolean;
+          _wearable_sync_ts: string | null;
         };
         Returns: Json;
       };
@@ -436,6 +448,8 @@ export type Database = {
           _battery: number;
           _charging: boolean;
           _client_ts: string;
+          _heart_rate_bpm: number | null;
+          _heart_rate_ts: string | null;
           _loc_acc: number;
           _loc_enc: string;
           _loc_iv: string;
@@ -444,6 +458,7 @@ export type Database = {
           _seq: number;
           _token_hash: string;
           _wearable: boolean;
+          _wearable_sync_ts: string | null;
         };
         Returns: Json;
       };

@@ -20,6 +20,9 @@ export const telemetrySchema = z.object({
   charging: z.boolean().nullable().optional(),
   network: z.string().max(40).nullable().optional(),
   wearableConnected: z.boolean().nullable().optional(),
+  heartRateBpm: z.number().int().min(1).max(300).nullable().optional(),
+  heartRateTimestamp: z.number().int().positive().nullable().optional(),
+  wearableSyncTimestamp: z.number().int().positive().nullable().optional(),
   location: locationSchema.nullable().optional(),
 });
 export type Telemetry = z.infer<typeof telemetrySchema>;
