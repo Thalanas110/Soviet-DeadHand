@@ -42,6 +42,14 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+
+    val configuredSupabaseUrl = providers.gradleProperty("guardianSupabaseUrl").orElse("").get()
+        .replace("\\", "\\\\")
+        .replace("\"", "\\\"")
+    defaultConfig {
+        buildConfigField("String", "SUPABASE_URL", "\"$configuredSupabaseUrl\"")
     }
 
     packaging {

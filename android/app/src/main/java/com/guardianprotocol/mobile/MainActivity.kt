@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
         }
         MonitoringRuntimeProvider.current = GuardianRuntimeFactory.create(
             applicationContext,
-            getString(R.string.supabase_url),
+            BuildConfig.SUPABASE_URL,
         )
         requestMonitoringPermissions()
     }
