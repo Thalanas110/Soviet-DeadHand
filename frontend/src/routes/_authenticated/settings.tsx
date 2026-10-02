@@ -40,10 +40,7 @@ function Settings() {
   return (
     <Shell callsign={data?.profile?.callsign}>
       <div className="grid gap-3 lg:grid-cols-2">
-        <Panel
-          title="Access passwords"
-          code={data?.profile?.pins_configured ? "SET" : "UNSET"}
-        >
+        <Panel title="Access passwords" code={data?.profile?.pins_configured ? "SET" : "UNSET"}>
           <form onSubmit={submit} className="space-y-2">
             {data?.profile?.pins_configured && (
               <input

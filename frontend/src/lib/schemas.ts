@@ -32,7 +32,11 @@ export const checkInSchema = telemetrySchema.extend({
 export const deviceTelemetrySchema = telemetrySchema; // posted by token-authenticated devices / wearable bridge
 
 export const setPinsSchema = z
-  .object({ current: z.string().max(64).optional(), checkin: passwordSchema, duress: passwordSchema })
+  .object({
+    current: z.string().max(64).optional(),
+    checkin: passwordSchema,
+    duress: passwordSchema,
+  })
   .refine((v) => v.checkin !== v.duress, {
     message: "Duress PIN must differ from check-in PIN",
     path: ["duress"],

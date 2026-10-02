@@ -13,11 +13,9 @@ describe("password credentials", () => {
   });
 
   it("requires distinct check-in and duress passwords", () => {
-    expect(
-      setPinsSchema.safeParse({ checkin: "A7!alpha", duress: "A7!alpha" }).success,
-    ).toBe(false);
-    expect(
-      setPinsSchema.safeParse({ checkin: "A7!alpha", duress: "B8@bravo" }).success,
-    ).toBe(true);
+    expect(setPinsSchema.safeParse({ checkin: "A7!alpha", duress: "A7!alpha" }).success).toBe(
+      false,
+    );
+    expect(setPinsSchema.safeParse({ checkin: "A7!alpha", duress: "B8@bravo" }).success).toBe(true);
   });
 });
