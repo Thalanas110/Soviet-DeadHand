@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ReadinessRail } from "@/components/deadhand/ReadinessRail";
 
 const NAV = [
-  { to: "/console", ru: "Пульт", en: "Console" },
+  { to: "/console", ru: "Пульт", en: "Dashboard" },
   { to: "/devices", ru: "Узлы", en: "Devices" },
   { to: "/contacts", ru: "Связь", en: "Contacts" },
   { to: "/settings", ru: "Коды", en: "Codes" },
@@ -54,6 +54,13 @@ export function Shell({
               {n.ru} · {n.en}
             </Link>
           ))}
+          <Link
+            to="/setup"
+            className="border-l border-border px-3 py-1.5 text-xs uppercase tracking-widest text-muted-foreground hover:text-primary"
+            activeProps={{ className: "border-l border-border bg-secondary text-primary" }}
+          >
+            Настройка · Setup
+          </Link>
         </nav>
         <button
           onClick={signOut}

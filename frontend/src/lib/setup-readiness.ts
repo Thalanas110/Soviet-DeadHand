@@ -19,9 +19,8 @@ export function deriveSetupReadiness(
 
 export function firstIncompleteStage(readiness: SetupReadiness): SetupStageId | null {
   return (
-    (["passwords", "handset", "cascade", "wearable"] as const).find(
-      (stage) => !readiness[stage],
-    ) ?? null
+    (["passwords", "handset", "cascade", "wearable"] as const).find((stage) => !readiness[stage]) ??
+    null
   );
 }
 

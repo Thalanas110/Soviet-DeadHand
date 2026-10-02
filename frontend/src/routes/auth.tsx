@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { ReadinessRail } from "@/components/deadhand/ReadinessRail";
+import { loadSetupDestination } from "@/lib/setup-routing";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -26,13 +27,26 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
+    let active = true;
+    const routeAuthenticatedUser = async () => {
+      try {
+        const destination = await loadSetupDestination();
+        if (active) navigate({ to: destination, replace: true });
+      } catch {
+        if (active) toast.error("Could not load operator setup");
+      }
+    };
+
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/console", replace: true });
+      if (data.session) void routeAuthenticatedUser();
     });
     const { data } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (session) navigate({ to: "/console", replace: true });
+      if (session) void routeAuthenticatedUser();
     });
-    return () => data.subscription.unsubscribe();
+    return () => {
+      active = false;
+      void data.subscription.unsubscribe();
+    };
   }, [navigate]);
 
   async function submit(e: React.FormEvent) {
