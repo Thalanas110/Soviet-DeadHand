@@ -11,6 +11,17 @@ class SequenceStoreTest {
         assertEquals(42L, store.next())
         assertEquals(43L, store.next())
     }
+
+    @Test
+    fun `secure counter store persists sequence through secret storage`() {
+        val secrets = object : SecretStore {
+            private var value: String? = "41"
+            override fun get(key: String): String? = value
+            override fun put(key: String, value: String) { this.value = value }
+        }
+
+        assertEquals(42L, SequenceStore(SecureCounterStore(secrets)).next())
+    }
 }
 
 private class InMemoryCounterStore(initial: Long) : CounterStore {
