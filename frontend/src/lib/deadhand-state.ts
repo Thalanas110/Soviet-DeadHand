@@ -1,5 +1,14 @@
 export type DeadHandState = "Q0" | "Q1" | "Q2" | "Q3" | "Q4";
 export type DeadHandResponse = "NONE" | "CORRECT" | "DURESS" | "UNSAFE";
+export type AlarmState =
+  "NORMAL" | "ARE_YOU_ALIVE" | "PROLONGED_NO_RESPONSE" | "CRITICAL_UNRESOLVED" | "RESOLVED";
+
+export function alarmStateForAutomaton(state: DeadHandState): AlarmState {
+  if (state === "Q0") return "NORMAL";
+  if (state === "Q1") return "ARE_YOU_ALIVE";
+  if (state === "Q2") return "PROLONGED_NO_RESPONSE";
+  return "CRITICAL_UNRESOLVED";
+}
 
 const HOUR = 60 * 60 * 1000;
 

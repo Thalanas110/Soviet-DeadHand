@@ -34,23 +34,24 @@ function Console() {
   const [coverOpen, setCoverOpen] = useState(false);
 
   const st = data?.status;
-  const label = STATE_LABEL[st?.state ?? "Q0"] ?? { code: "", ru: "", en: "" };
+  const automatonState = st?.automaton_state ?? "Q0";
+  const label = STATE_LABEL[automatonState] ?? { code: "", ru: "", en: "" };
   const handsetId = getHandsetId();
 
   let deadline: number | null = null;
   let deadlineLabel = "";
   if (st?.armed) {
-    if (st.state === "Q0") {
+    if (automatonState === "Q0") {
       const base = st.last_any_heartbeat_at ?? st.armed_at ?? st.state_entered_at;
       deadline = new Date(base).getTime() + SILENCE_HOURS * 3600_000;
       deadlineLabel = "Until safe challenge";
-    } else if (st.state === "Q1") {
+    } else if (automatonState === "Q1") {
       deadline = new Date(st.state_entered_at).getTime() + SAFE_WINDOW_HOURS * 3600_000;
       deadlineLabel = "Until location challenge";
-    } else if (st.state === "Q2") {
+    } else if (automatonState === "Q2") {
       deadline = new Date(st.state_entered_at).getTime() + LOCATION_WINDOW_HOURS * 3600_000;
       deadlineLabel = "Until attention mode";
-    } else if (st.state === "Q3" || st.state === "Q4") {
+    } else if (automatonState === "Q3" || automatonState === "Q4") {
       deadline = new Date(st.state_entered_at).getTime() + ALERT_CYCLE_HOURS * 3600_000;
       deadlineLabel = "Until next alert cycle";
     }
@@ -124,9 +125,9 @@ function Console() {
   const wear = data?.devices.filter((d) => d.kind === "wearable" && !d.revoked_at) ?? [];
   const fresh = (iso?: string | null) => !!iso && now - new Date(iso).getTime() < 6 * 3600_000;
   const tone =
-    st?.state === "Q3" || st?.state === "Q4"
+    automatonState === "Q3" || automatonState === "Q4"
       ? "text-destructive glow-alarm"
-      : st?.state === "Q0"
+      : automatonState === "Q0"
         ? "text-radar glow-radar"
         : "text-primary glow-amber";
 

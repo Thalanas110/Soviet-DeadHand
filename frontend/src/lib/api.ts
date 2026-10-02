@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { ContactInput, RegisterDeviceInput, Telemetry } from "./schemas";
+import type { AlarmState } from "./deadhand-state";
 
 export type OperatorAction =
   | { action: "bootstrap" }
@@ -24,7 +25,8 @@ export type OperatorSnapshot = {
 };
 
 export type OperatorStatus = {
-  state: string;
+  state: AlarmState;
+  automaton_state: "Q0" | "Q1" | "Q2" | "Q3" | "Q4";
   armed: boolean;
   armed_at: string | null;
   state_entered_at: string;

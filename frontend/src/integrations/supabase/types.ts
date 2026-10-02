@@ -318,6 +318,7 @@ export type Database = {
           active_incident_id: string | null;
           armed: boolean;
           armed_at: string | null;
+          automaton_state: Database["public"]["Enums"]["deadhand_automaton_state"];
           last_any_heartbeat_at: string | null;
           last_complete_heartbeat_at: string | null;
           state: Database["public"]["Enums"]["safety_state"];
@@ -329,6 +330,7 @@ export type Database = {
           active_incident_id?: string | null;
           armed?: boolean;
           armed_at?: string | null;
+          automaton_state?: Database["public"]["Enums"]["deadhand_automaton_state"];
           last_any_heartbeat_at?: string | null;
           last_complete_heartbeat_at?: string | null;
           state?: Database["public"]["Enums"]["safety_state"];
@@ -340,6 +342,7 @@ export type Database = {
           active_incident_id?: string | null;
           armed?: boolean;
           armed_at?: string | null;
+          automaton_state?: Database["public"]["Enums"]["deadhand_automaton_state"];
           last_any_heartbeat_at?: string | null;
           last_complete_heartbeat_at?: string | null;
           state?: Database["public"]["Enums"]["safety_state"];
@@ -379,6 +382,20 @@ export type Database = {
         Returns: undefined;
       };
       _snapshot: { Args: { _user: string }; Returns: Json };
+      _transition_automaton: {
+        Args: {
+          _actor: string;
+          _alarm_to: Database["public"]["Enums"]["safety_state"];
+          _automaton_to: Database["public"]["Enums"]["deadhand_automaton_state"];
+          _details?: Json;
+          _device: string;
+          _heartbeat: string;
+          _incident: string;
+          _rule: string;
+          _user: string;
+        };
+        Returns: undefined;
+      };
       _transition: {
         Args: {
           _actor: string;
@@ -457,7 +474,9 @@ export type Database = {
     };
     Enums: {
       device_kind: "phone" | "wearable";
-      safety_state: "Q0" | "Q1" | "Q2" | "Q3" | "Q4";
+      deadhand_automaton_state: "Q0" | "Q1" | "Q2" | "Q3" | "Q4";
+      safety_state:
+        "NORMAL" | "ARE_YOU_ALIVE" | "PROLONGED_NO_RESPONSE" | "CRITICAL_UNRESOLVED" | "RESOLVED";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -580,7 +599,14 @@ export const Constants = {
   public: {
     Enums: {
       device_kind: ["phone", "wearable"],
-      safety_state: ["Q0", "Q1", "Q2", "Q3", "Q4"],
+      deadhand_automaton_state: ["Q0", "Q1", "Q2", "Q3", "Q4"],
+      safety_state: [
+        "NORMAL",
+        "ARE_YOU_ALIVE",
+        "PROLONGED_NO_RESPONSE",
+        "CRITICAL_UNRESOLVED",
+        "RESOLVED",
+      ],
     },
   },
 } as const;

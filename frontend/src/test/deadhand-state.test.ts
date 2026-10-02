@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { classifyResponse, nextState, type DeadHandState } from "@/lib/deadhand-state";
+import {
+  alarmStateForAutomaton,
+  classifyResponse,
+  nextState,
+  type DeadHandState,
+} from "@/lib/deadhand-state";
 
 const at = (hours: number) => new Date(hours * 60 * 60 * 1000).toISOString();
 
@@ -42,5 +47,13 @@ describe("Dead Hand Q0-Q4 automaton", () => {
     expect(classifyResponse("duress", "check-in", "duress")).toBe("DURESS");
     expect(classifyResponse("wrong", "check-in", "duress")).toBe("DURESS");
     expect(classifyResponse({ type: "UNSAFE_REPORT" }, "check-in", "duress")).toBe("UNSAFE");
+  });
+
+  it("keeps semantic alarm states separate from q-node automaton states", () => {
+    expect(alarmStateForAutomaton("Q0")).toBe("NORMAL");
+    expect(alarmStateForAutomaton("Q1")).toBe("ARE_YOU_ALIVE");
+    expect(alarmStateForAutomaton("Q2")).toBe("PROLONGED_NO_RESPONSE");
+    expect(alarmStateForAutomaton("Q3")).toBe("CRITICAL_UNRESOLVED");
+    expect(alarmStateForAutomaton("Q4")).toBe("CRITICAL_UNRESOLVED");
   });
 });
