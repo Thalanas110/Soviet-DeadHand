@@ -9,6 +9,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.content.ContextCompat
 import com.guardianprotocol.mobile.background.MonitoringService
+import com.guardianprotocol.mobile.background.GuardianRuntimeFactory
+import com.guardianprotocol.mobile.background.MonitoringRuntimeProvider
 import com.guardianprotocol.mobile.core.MonitoringPermissions
 import com.guardianprotocol.mobile.ui.GuardianShell
 import com.guardianprotocol.mobile.ui.theme.GuardianProtocolTheme
@@ -27,6 +29,10 @@ class MainActivity : ComponentActivity() {
                 GuardianShell()
             }
         }
+        MonitoringRuntimeProvider.current = GuardianRuntimeFactory.create(
+            applicationContext,
+            getString(R.string.supabase_url),
+        )
         requestMonitoringPermissions()
     }
 

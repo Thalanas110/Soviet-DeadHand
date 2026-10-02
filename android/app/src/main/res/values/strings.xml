@@ -4,4 +4,5 @@
     <string name="monitoring_notification_channel">Safety monitoring</string>
     <string name="monitoring_notification_title">Guardian Protocol active</string>
     <string name="monitoring_notification_text">Phone and wearable contact collection is active.</string>
+    <string name="supabase_url"></string>
 </resources>
