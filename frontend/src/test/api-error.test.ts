@@ -14,13 +14,18 @@ describe("API errors", () => {
               path: ["checkin"],
             },
           ],
+          received: {
+            checkinLength: 8,
+            duressLength: 8,
+            valuesEqual: true,
+          },
         }),
         { status: 400, headers: { "Content-Type": "application/json" } },
       ),
     });
 
     await expect(formatApiError(error)).resolves.toBe(
-      "Edge Function returned a non-2xx status code: checkin: Password must be 8-64 characters",
+      "Edge Function returned a non-2xx status code: checkin: Password must be 8-64 characters (received lengths checkin=8, duress=8; valuesEqual=true)",
     );
   });
 });

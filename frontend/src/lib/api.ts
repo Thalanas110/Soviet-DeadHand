@@ -82,11 +82,20 @@ export async function formatApiError(error: unknown): Promise<string> {
   try {
     const payload = (await context.clone().json()) as {
       details?: Array<{ message?: string; path?: Array<string | number> }>;
+      received?: {
+        checkinLength?: number | null;
+        duressLength?: number | null;
+        valuesEqual?: boolean;
+      };
     };
     const details = payload.details
       ?.map(({ message, path }) => `${path?.join(".") || "request"}: ${message || "invalid value"}`)
       .join("; ");
-    return details ? `${fallback}: ${details}` : fallback;
+    const received = payload.received;
+    const receivedSummary = received
+      ? ` (received lengths checkin=${received.checkinLength ?? "?"}, duress=${received.duressLength ?? "?"}; valuesEqual=${received.valuesEqual ?? "?"})`
+      : "";
+    return details ? `${fallback}: ${details}${receivedSummary}` : fallback;
   } catch {
     return fallback;
   }

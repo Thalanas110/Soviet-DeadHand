@@ -58,7 +58,7 @@ function Settings() {
                 autoComplete="current-password"
                 placeholder="Current password"
                 value={f.current}
-                onChange={(e) => setF({ ...f, current: e.target.value })}
+                onChange={(e) => setF((current) => ({ ...current, current: e.target.value }))}
                 className={inp}
               />
             )}
@@ -70,7 +70,7 @@ function Settings() {
               autoComplete="new-password"
               placeholder="Check-in password"
               value={f.checkin}
-              onChange={(e) => setF({ ...f, checkin: e.target.value })}
+              onChange={(e) => setF((current) => ({ ...current, checkin: e.target.value }))}
               className={inp}
             />
             <input
@@ -81,7 +81,7 @@ function Settings() {
               autoComplete="new-password"
               placeholder="Duress password"
               value={f.duress}
-              onChange={(e) => setF({ ...f, duress: e.target.value })}
+              onChange={(e) => setF((current) => ({ ...current, duress: e.target.value }))}
               className={inp}
             />
             <button className="w-full bg-primary py-2.5 font-display text-sm uppercase tracking-widest text-primary-foreground">

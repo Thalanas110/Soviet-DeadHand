@@ -186,8 +186,15 @@ Deno.serve((request) => {
     if (request.method !== "POST")
       throw new HttpError(405, "METHOD_NOT_ALLOWED");
     const auth = await requireAuth(request);
-    const parsed = actionSchema.safeParse(await body<unknown>(request));
+    const requestBody = await body<unknown>(request);
+    const parsed = actionSchema.safeParse(requestBody);
     if (!parsed.success) {
+      const raw =
+        requestBody && typeof requestBody === "object" && !Array.isArray(requestBody)
+          ? (requestBody as Record<string, unknown>)
+          : {};
+      const checkin = typeof raw.checkin === "string" ? raw.checkin : null;
+      const duress = typeof raw.duress === "string" ? raw.duress : null;
       return json(
         {
           error: "INVALID_REQUEST",
@@ -196,6 +203,16 @@ Deno.serve((request) => {
             message,
             path,
           })),
+          ...(raw.action === "setPins"
+            ? {
+                received: {
+                  action: raw.action,
+                  checkinLength: checkin?.length ?? null,
+                  duressLength: duress?.length ?? null,
+                  valuesEqual: checkin !== null && checkin === duress,
+                },
+              }
+            : {}),
         },
         400,
       );
