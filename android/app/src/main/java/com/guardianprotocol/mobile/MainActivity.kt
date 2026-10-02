@@ -13,7 +13,7 @@ import com.guardianprotocol.mobile.background.GuardianRuntimeFactory
 import com.guardianprotocol.mobile.background.MonitoringRuntimeProvider
 import com.guardianprotocol.mobile.core.MonitoringPermissions
 import com.guardianprotocol.mobile.ui.GuardianShell
-import com.guardianprotocol.mobile.ui.theme.GuardianProtocolTheme
+import com.guardianprotocol.mobile.ui.theme.SovietDeadHandTheme
 
 class MainActivity : ComponentActivity() {
     private val permissionLauncher = registerForActivityResult(
@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            GuardianProtocolTheme {
+            SovietDeadHandTheme {
                 GuardianShell()
             }
         }

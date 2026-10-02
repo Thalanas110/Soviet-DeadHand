@@ -55,7 +55,7 @@ private val GuardianScheme = darkColorScheme(
 )
 
 @Composable
-fun GuardianProtocolTheme(content: @Composable () -> Unit) {
+fun SovietDeadHandTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = GuardianScheme,
         typography = GuardianTypography,

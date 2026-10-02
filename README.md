@@ -1,4 +1,4 @@
-# Guardian Protocol
+# Soviet Dead Hand
 
 DEAD HAND — FULL PROTOCOL v1
 Build Dead Hand as a Supabase-only personal safety monitoring and emergency escalation system.

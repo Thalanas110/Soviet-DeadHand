@@ -57,7 +57,7 @@ fun GuardianShell(
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             Text(
-                text = "GUARDIAN PROTOCOL",
+                text = "SOVIET DEAD HAND",
                 style = MaterialTheme.typography.headlineSmall,
                 color = GuardianColors.signalRed,
             )

@@ -1,6 +1,6 @@
-# Guardian Protocol Android
+# Soviet Dead Hand Android
 
-Native Kotlin/Jetpack Compose companion for the Guardian Protocol safety console.
+Native Kotlin/Jetpack Compose companion for the Soviet Dead Hand safety console.
 
 ## Local setup
 

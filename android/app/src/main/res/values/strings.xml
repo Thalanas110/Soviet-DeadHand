@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Guardian Protocol</string>
+    <string name="app_name">Soviet Dead Hand</string>
     <string name="monitoring_notification_channel">Safety monitoring</string>
-    <string name="monitoring_notification_title">Guardian Protocol active</string>
+    <string name="monitoring_notification_title">Soviet Dead Hand active</string>
     <string name="monitoring_notification_text">Phone and wearable contact collection is active.</string>
 </resources>
