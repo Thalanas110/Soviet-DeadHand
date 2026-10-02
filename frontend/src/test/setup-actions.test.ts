@@ -55,6 +55,19 @@ describe("setup actions", () => {
       token: "device-token",
       kind: "phone",
     });
+    expect(action).toHaveBeenCalledWith({
+      action: "registerDevice",
+      label: "Primary phone",
+      kind: "phone",
+    });
+  });
+
+  it("rejects a device registration without a one-time token", async () => {
+    action.mockResolvedValue({ ok: true });
+
+    await expect(registerSetupDevice({ label: "Primary phone", kind: "phone" })).rejects.toThrow(
+      "Registration failed",
+    );
   });
 
   it("authorizes contacts through the contacts API", async () => {

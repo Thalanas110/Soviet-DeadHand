@@ -28,20 +28,27 @@ function AuthPage() {
 
   useEffect(() => {
     let active = true;
-    const routeAuthenticatedUser = async () => {
-      try {
-        const destination = await loadSetupDestination();
-        if (active) navigate({ to: destination, replace: true });
-      } catch {
-        if (active) toast.error("Could not load operator setup");
-      }
+    let routingPromise: Promise<void> | null = null;
+    const routeAuthenticatedUser = () => {
+      if (routingPromise) return routingPromise;
+      routingPromise = loadSetupDestination()
+        .then((destination) => {
+          if (active) navigate({ to: destination, replace: true });
+        })
+        .catch(() => {
+          if (active) toast.error("Could not load operator setup");
+        })
+        .finally(() => {
+          routingPromise = null;
+        });
+      return routingPromise;
     };
 
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) void routeAuthenticatedUser();
     });
-    const { data } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (session) void routeAuthenticatedUser();
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) void routeAuthenticatedUser();
     });
     return () => {
       active = false;

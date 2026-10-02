@@ -6,7 +6,11 @@ import { SetupStage } from "@/components/deadhand/SetupStage";
 import { Panel, Shell } from "@/components/deadhand/Shell";
 import { useOperator } from "@/hooks/use-operator";
 import { contactsApi } from "@/lib/api";
-import { tokenForDeviceKind, type SetupDeviceToken } from "@/lib/setup-device-token";
+import {
+  tokenForDeviceKind,
+  type SetupDeviceKind,
+  type SetupDeviceToken,
+} from "@/lib/setup-device-token";
 import {
   authorizeSetupContact,
   registerSetupDevice,
@@ -127,8 +131,10 @@ function Setup() {
     event.preventDefault();
     setBusy(true);
     try {
-      const payload =
-        activeStage === "wearable" ? { ...device, kind: "wearable" as const } : device;
+      const payload = {
+        label: device.label,
+        kind: activeStage === "wearable" ? ("wearable" as const) : ("phone" as const),
+      };
       const registered = await registerSetupDevice(payload);
       setDeviceToken(registered);
       setDevice({ label: "", kind: payload.kind });
@@ -275,8 +281,9 @@ function Setup() {
                 {stage.id === "handset" && (
                   <DeviceForm
                     busy={busy}
-                    device={device}
-                    onChange={setDevice}
+                    kind="phone"
+                    label={device.label}
+                    onLabelChange={(label) => setDevice({ label, kind: "phone" })}
                     onSubmit={registerDevice}
                     token={tokenForDeviceKind(deviceToken, "phone")}
                   />
@@ -292,8 +299,9 @@ function Setup() {
                 {stage.id === "wearable" && (
                   <DeviceForm
                     busy={busy}
-                    device={{ ...device, kind: "wearable" }}
-                    onChange={(next) => setDevice({ ...next, kind: "wearable" })}
+                    kind="wearable"
+                    label={device.label}
+                    onLabelChange={(label) => setDevice({ label, kind: "wearable" })}
                     onSubmit={registerDevice}
                     token={tokenForDeviceKind(deviceToken, "wearable")}
                   />
@@ -368,16 +376,18 @@ export function PasswordForm({
   );
 }
 
-function DeviceForm({
+export function DeviceForm({
   busy,
-  device,
-  onChange,
+  kind,
+  label,
+  onLabelChange,
   onSubmit,
   token,
 }: {
   busy: boolean;
-  device: { label: string; kind: "phone" | "wearable" };
-  onChange: (device: { label: string; kind: "phone" | "wearable" }) => void;
+  kind: SetupDeviceKind;
+  label: string;
+  onLabelChange: (label: string) => void;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   token: string | null;
 }) {
@@ -387,25 +397,18 @@ function DeviceForm({
         Device label
         <input
           required
-          value={device.label}
-          onChange={(event) => onChange({ ...device, label: event.target.value })}
+          value={label}
+          onChange={(event) => onLabelChange(event.target.value)}
           className="mt-1 w-full border border-input bg-panel px-3 py-2 text-sm"
           placeholder="Phone or wearable name"
         />
       </label>
-      <label className="block text-[10px] uppercase tracking-widest text-muted-foreground">
+      <div className="block text-[10px] uppercase tracking-widest text-muted-foreground">
         Device type
-        <select
-          value={device.kind}
-          onChange={(event) =>
-            onChange({ ...device, kind: event.target.value as "phone" | "wearable" })
-          }
-          className="mt-1 w-full border border-input bg-panel px-3 py-2 text-sm"
-        >
-          <option value="phone">Phone</option>
-          <option value="wearable">Wearable</option>
-        </select>
-      </label>
+        <p className="mt-1 border border-input bg-panel px-3 py-2 text-sm">
+          {kind === "phone" ? "Phone" : "Wearable"}
+        </p>
+      </div>
       <button
         disabled={busy}
         className="bg-primary px-4 py-2.5 text-xs uppercase tracking-widest text-primary-foreground disabled:opacity-50"
