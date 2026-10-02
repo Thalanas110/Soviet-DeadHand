@@ -24,27 +24,18 @@ export const Route = createFileRoute("/")({
 });
 
 const AUTOMATON_STAGES = [
-  [
-    "Q0",
-    "MONITORING",
-    "Phone, wearable, and complete heartbeat signals keep the system satisfied.",
-  ],
-  [
-    "Q1",
-    "ARE YOU SAFE?",
-    "After 24h of silence, you have 72h to provide a correct response or heartbeat.",
-  ],
-  [
-    "Q2",
-    "WHERE ARE YOU?",
-    "After Q1 expires, you have 48h to respond. This state exits only on a response.",
-  ],
-  ["Q3", "ATTENTION!", "The emergency cascade is active and reminders repeat every 120h."],
-  [
-    "Q4",
-    "LIVELINESS ALERT",
-    "Correct rescue returns to Q1; duress and unsafe reports remain silently monitored.",
-  ],
+  ["Q0", "НАБЛЮДЕНИЕ", "Monitoring. Registered devices report complete heartbeat signals."],
+  ["Q1", "ВЫ В БЕЗОПАСНОСТИ?", "Are you safe? Silence opens a 72h response window."],
+  ["Q2", "ГДЕ ВЫ?", "Where are you? A further 48h requires a direct response."],
+  ["Q3", "ВНИМАНИЕ!", "Attention. The emergency contact cascade is active."],
+  ["Q4", "ТРЕВОГА ЖИВУЧЕСТИ", "Liveliness alert. Correct rescue returns the system to Q1."],
+] as const;
+
+const SETUP_STAGES = [
+  ["01", "КОДЫ ДОСТУПА", "Access passwords", "Required"],
+  ["02", "ТЕЛЕФОН", "Primary handset", "Required"],
+  ["03", "ЦЕПЬ ОПОВЕЩЕНИЯ", "Emergency cascade", "Required"],
+  ["04", "НАРУЧНЫЙ УЗЕЛ", "Wearable bridge", "Recommended"],
 ] as const;
 
 function Landing() {
@@ -69,48 +60,62 @@ function Landing() {
       <section className="grid gap-8 py-10 md:grid-cols-[1.3fr_1fr] md:py-16">
         <div>
           <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">
-            Комплекс «Периметр» · Personal edition
+            Комплекс «Периметр» · Web setup dossier
           </p>
           <h1 className="mt-4 font-display text-5xl uppercase leading-[0.95] text-primary glow-amber md:text-7xl">
-            Dead
+            Мёртвая
             <br />
-            Hand
+            рука
           </h1>
           <p className="mt-6 max-w-lg text-base leading-relaxed text-foreground/85">
-            A defensive personal safety system. Your handset and wearable report in. If they go
-            silent, the server notices, challenges you, and, if you still don't answer, alerts the
-            people you trust with your last known position.
+            Dead Hand is a defensive personal safety system. Establish the operator account, connect
+            the reporting devices, and authorize the people who should receive an emergency
+            dispatch.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               to="/auth"
               className="bg-primary px-6 py-3 font-display text-sm uppercase tracking-widest text-primary-foreground hover:brightness-110"
             >
-              Взвести систему · Arm the system
+              Begin setup
             </Link>
           </div>
-          <ul className="mt-10 grid gap-2 text-xs uppercase tracking-wider text-muted-foreground sm:grid-cols-2">
-            <li>▸ Server-authoritative timers</li>
-            <li>▸ AES-256-GCM sealed telemetry</li>
-            <li>▸ Covert duress code</li>
-            <li>▸ Replay-proof sequencing</li>
+          <ul className="mt-10 grid gap-3 text-xs uppercase tracking-wider text-muted-foreground sm:grid-cols-2">
+            <li className="setup-rule">Server-authoritative timers</li>
+            <li className="setup-rule">AES-256-GCM sealed telemetry</li>
+            <li className="setup-rule">Covert duress code</li>
+            <li className="setup-rule">Replay-proof sequencing</li>
           </ul>
         </div>
 
         <div className="crt relative overflow-hidden p-5">
-          <div className="relative mx-auto aspect-square max-w-xs rounded-full border border-radar/40">
-            <div className="absolute inset-[18%] rounded-full border border-radar/30" />
-            <div className="absolute inset-[36%] rounded-full border border-radar/20" />
-            <div
-              className="absolute inset-0 animate-sweep rounded-full"
-              style={{
-                background:
-                  "conic-gradient(from 0deg, transparent 0 300deg, color-mix(in oklch, var(--color-radar) 45%, transparent) 360deg)",
-              }}
-            />
-            <div className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-radar" />
+          <div className="relative">
+            <div className="border-b border-border pb-3">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-primary">
+                Настройка системы · Setup dossier
+              </p>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                Complete the required lines before using the Dashboard as the live command post.
+              </p>
+            </div>
+            <ol className="landing-setup-map mt-4">
+              {SETUP_STAGES.map(([code, ru, en, requirement]) => (
+                <li key={code}>
+                  <span className="landing-setup-map__code">{code}</span>
+                  <span>
+                    <span className="block text-xs text-primary">{ru}</span>
+                    <span className="mt-1 block text-[10px] uppercase tracking-widest text-muted-foreground">
+                      {en}
+                    </span>
+                  </span>
+                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                    {requirement}
+                  </span>
+                </li>
+              ))}
+            </ol>
           </div>
-          <p className="relative mt-4 text-center text-xs uppercase tracking-[0.3em] text-radar glow-radar">
+          <p className="relative mt-5 border-t border-border pt-3 text-xs uppercase tracking-[0.3em] text-radar glow-radar">
             Канал зашифрован · Link sealed
           </p>
         </div>
@@ -118,7 +123,7 @@ function Landing() {
 
       <section className="border-t border-border py-10">
         <h2 className="font-display text-xl uppercase tracking-widest text-primary">
-          Escalation doctrine
+          Доктрина эскалации · Escalation doctrine
         </h2>
         <ol className="mt-6 grid gap-3 md:grid-cols-5">
           {AUTOMATON_STAGES.map(([code, ru, en], i) => (

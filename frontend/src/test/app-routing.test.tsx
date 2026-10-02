@@ -36,6 +36,25 @@ describe("App routing", () => {
     expect(source).toContain("<ReadinessRail />");
   });
 
+  it("keeps one Dashboard tab and points setup to its own route", () => {
+    const shell = readFileSync("src/components/deadhand/Shell.tsx", "utf8");
+    const landing = readFileSync("src/routes/index.tsx", "utf8");
+
+    expect(shell).toContain('to: "/console"');
+    expect(shell).toContain('en: "Dashboard"');
+    expect(shell.match(/en: "Dashboard"/g)).toHaveLength(1);
+    expect(landing).toContain('to="/auth"');
+    expect(landing).toContain("Комплекс");
+    expect(landing).toContain("Настройка");
+  });
+
+  it("renders explicit Q0 through Q4 setup progression", () => {
+    const setup = readFileSync("src/routes/_authenticated/setup.tsx", "utf8");
+    for (const code of ["Q0", "Q1", "Q2", "Q3", "Q4"]) {
+      expect(setup).toContain(code);
+    }
+  });
+
   it("renders the not-found route", async () => {
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
 
