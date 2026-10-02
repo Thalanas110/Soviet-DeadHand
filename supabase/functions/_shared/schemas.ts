@@ -22,16 +22,24 @@ export const telemetrySchema = z.object({
   location: locationSchema.nullable().optional(),
 });
 
-export const setPinsSchema = z
-  .object({
-    current: z.string().max(64).optional(),
-    checkin: passwordSchema,
-    duress: passwordSchema,
-  })
-  .refine((value) => value.checkin !== value.duress, {
+const setPinsFieldsSchema = z.object({
+  current: z.string().max(64).optional(),
+  checkin: passwordSchema,
+  duress: passwordSchema,
+});
+
+const distinctPasswords = (value: { checkin: string; duress: string }) =>
+  value.checkin !== value.duress;
+
+const distinctPasswordMessage = {
     message: "Duress password must differ from check-in password",
     path: ["duress"],
-  });
+};
+
+export const setPinsSchema = setPinsFieldsSchema.refine(
+  distinctPasswords,
+  distinctPasswordMessage,
+);
 
 export const contactSchema = z.object({
   alias: z.string().trim().min(1).max(40),
@@ -55,11 +63,8 @@ export const actionSchema = z.union([
   }),
   z.object({ action: z.literal("revokeDevice"), deviceId: z.string().uuid() }),
   z
-    .object({ action: z.literal("setPins"), ...setPinsSchema.shape })
-    .refine((value) => value.checkin !== value.duress, {
-      message: "Duress password must differ from check-in password",
-      path: ["duress"],
-    }),
+    .object({ action: z.literal("setPins"), ...setPinsFieldsSchema.shape })
+    .refine(distinctPasswords, distinctPasswordMessage),
   z.object({
     action: z.literal("setArmed"),
     armed: z.boolean(),
