@@ -47,6 +47,15 @@ export function setPinsValidationMessage(input: unknown): string | null {
   return result.success ? null : (result.error.issues[0]?.message ?? "Invalid passwords");
 }
 
+export function readSetPinsForm(form: HTMLFormElement) {
+  const values = new FormData(form);
+  return {
+    current: String(values.get("current") ?? ""),
+    checkin: String(values.get("checkin") ?? ""),
+    duress: String(values.get("duress") ?? ""),
+  };
+}
+
 export const contactSchema = z.object({
   alias: z.string().trim().min(1).max(40),
   name: z.string().trim().min(1).max(100),
