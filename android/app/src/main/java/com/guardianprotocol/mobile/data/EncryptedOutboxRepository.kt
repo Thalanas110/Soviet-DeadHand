@@ -99,6 +99,10 @@ class EncryptedOutboxRepository(
         val existing = storage.all().firstOrNull { it.id == id } ?: return
         storage.put(existing.copy(attempts = existing.attempts + 1, nextAttemptAt = nextAttemptAt, reason = reason))
     }
+
+    fun markPermanent(id: String, reason: String) {
+        markRetry(id, Instant.ofEpochMilli(Long.MAX_VALUE), "PERMANENT:$reason")
+    }
 }
 
 class PayloadCipher(private val key: SecretKey) {

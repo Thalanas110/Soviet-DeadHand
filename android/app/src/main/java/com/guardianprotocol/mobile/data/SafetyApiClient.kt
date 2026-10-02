@@ -19,7 +19,8 @@ fun interface HttpTransport {
 class SafetyApiClient(
     private val baseUrl: String,
     private val transport: HttpTransport,
-) {
+) : com.guardianprotocol.mobile.background.HeartbeatUploader {
+    override
     fun uploadHeartbeat(deviceToken: String, payload: TelemetryPayload): UploadDisposition {
         val request = HttpRequest(
             method = "POST",
