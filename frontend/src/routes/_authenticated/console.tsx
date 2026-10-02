@@ -132,7 +132,10 @@ function Console() {
         : "text-primary glow-amber";
 
   return (
-    <Shell callsign={data?.profile?.callsign}>
+    <Shell
+      callsign={data?.profile?.callsign}
+      railActive={automatonState === "Q3" || automatonState === "Q4"}
+    >
       {isLoading ? (
         <p className="text-xs uppercase tracking-widest text-muted-foreground animate-blink">
           Установка связи…

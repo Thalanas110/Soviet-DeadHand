@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ReadinessRail } from "@/components/deadhand/ReadinessRail";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -48,7 +49,8 @@ const AUTOMATON_STAGES = [
 
 function Landing() {
   return (
-    <main className="mx-auto min-h-screen max-w-6xl px-4 py-6 md:px-8 md:py-10">
+    <main className="relative mx-auto min-h-screen max-w-6xl px-4 py-6 md:px-8 md:py-10">
+      <ReadinessRail />
       <header className="flex items-center justify-between border-b border-border pb-3">
         <div className="flex items-center gap-3">
           <span className="inline-block h-3 w-3 rounded-full bg-radar animate-blink" />

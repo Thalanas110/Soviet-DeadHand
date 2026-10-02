@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { ReadinessRail } from "@/components/deadhand/ReadinessRail";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -67,7 +68,8 @@ function AuthPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-4">
+    <main className="relative flex min-h-screen items-center justify-center px-4">
+      <ReadinessRail />
       <div className="plate relative w-full max-w-sm p-6">
         <div className="hazard -mx-6 -mt-6 mb-6 h-2" />
         <p className="text-[10px] uppercase tracking-[0.35em] text-muted-foreground">

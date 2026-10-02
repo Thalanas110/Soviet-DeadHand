@@ -2,6 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { ReadinessRail } from "@/components/deadhand/ReadinessRail";
 
 const NAV = [
   { to: "/console", ru: "Пульт", en: "Console" },
@@ -13,9 +14,11 @@ const NAV = [
 export function Shell({
   children,
   callsign,
+  railActive = false,
 }: {
   children: ReactNode;
   callsign?: string | undefined;
+  railActive?: boolean;
 }) {
   const qc = useQueryClient();
   const navigate = useNavigate();
@@ -26,7 +29,8 @@ export function Shell({
     navigate({ to: "/auth", replace: true });
   }
   return (
-    <div className="mx-auto min-h-screen max-w-7xl pb-24 md:pb-8">
+    <div className="relative mx-auto min-h-screen max-w-7xl pb-24 md:pb-8">
+      <ReadinessRail active={railActive} />
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-border bg-background/90 px-4 py-2.5 backdrop-blur md:px-6">
         <div className="flex items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-full bg-radar animate-blink" />

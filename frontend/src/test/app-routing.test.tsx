@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { QueryClient } from "@tanstack/react-query";
 import { createMemoryHistory, createRouter, RouterProvider } from "@tanstack/react-router";
 import { cleanup, render, waitFor } from "@testing-library/react";
@@ -28,6 +29,11 @@ describe("App routing", () => {
     const { container } = await renderAt("/");
 
     await waitFor(() => expect(container.firstChild).not.toBeNull());
+  });
+
+  it("declares the readiness rail on the public route", () => {
+    const source = readFileSync("src/routes/index.tsx", "utf8");
+    expect(source).toContain("<ReadinessRail />");
   });
 
   it("renders the not-found route", async () => {
