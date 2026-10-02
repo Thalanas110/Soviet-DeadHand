@@ -46,6 +46,7 @@ describe("App routing", () => {
     expect(landing).toContain('to="/auth"');
     expect(landing).toContain("Комплекс");
     expect(landing).toContain("Настройка");
+    expect(landing).toContain("c4ff83c5eadddc1a6627fbce57d559e0.png");
   });
 
   it("renders explicit Q0 through Q4 setup progression", () => {

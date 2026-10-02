@@ -1,52 +1,69 @@
 # Soviet Dead Hand
 
-DEAD HAND — FULL PROTOCOL v1
-Build Dead Hand as a Supabase-only personal safety monitoring and emergency escalation system.
-Stack:
-React
-TypeScript
-Vite
-Supabase Auth
-Supabase PostgreSQL
-Supabase Row Level Security
-Supabase Edge Functions
-Supabase Edge Function API
-Supabase scheduled jobs / Cron
-Zod
-Vitest
-Playwright
+Soviet Dead Hand is a defensive personal-safety system for check-ins, emergency escalation, and trusted-contact coordination.
 
-DO NOT create ExpressJS, NestJS, Fastify, Render backend, or any separate API server. Supabase is the backend.
-Remember to write all database migrations in SQL files under supabase/migrations/.
+I created it after a suicide attempt and because I face a serious possibility of being kidnapped. The project is meant to help me stay connected to trusted people when I cannot safely communicate, while giving them a structured way to respond to missed check-ins or an emergency signal.
 
-Aesthetics & Theme:
-Sovietized militaristic-style dead hand system (Комплекс «Периметр»). Cold War command bunker aesthetic with phosphor amber / radar green CRT readouts, Soviet military nomenclature, tactile arming toggles, and status indicators, while strictly functioning as a defensive, safety-only personal emergency monitoring and escalation system.
+This is safety infrastructure, not a weapon, retaliation system, surveillance product, or substitute for emergency services. It should only be used with informed consent, authorized contacts, and local emergency procedures.
 
-Layout & Form Factor:
-Mobile-first design. Provide both a mobile tactical handheld dashboard (one-handed rapid check-in, duress silent alarm toggle, countdown ticker, encrypted link indicators) and a responsive desktop command post console.
+## What it does
 
-Cryptography:
-All sensitive data (telemetry, coordinates, biometric samples, contact info) must be encrypted with AES-256-GCM using Web Crypto API.
+- Guides the operator through a web setup dossier for passwords, phone registration, emergency contacts, and an optional wearable.
+- Provides one desktop Dashboard tab for current safety state and response actions.
+- Supports heartbeat/check-in monitoring and server-side escalation rules.
+- Sends idempotent notifications to pre-authorized, prioritized emergency contacts.
+- Keeps sensitive operations behind Supabase Auth, PostgreSQL Row Level Security, and Edge Functions.
+- Uses a Soviet command-bunker visual language as a design direction, while keeping the product focused on protection and recovery.
 
-Core Doctrine & Rules:
-1. The server (Supabase/PostgreSQL) is authoritative. React is UI only and never directly mutates safety state.
-2. Every complete safety heartbeat requires a valid location sample. Without location, it is incomplete diagnostic telemetry only and must not update last_complete_heartbeat_at.
-3. Monotonic sequence numbers per device to prevent replay attacks. Server timestamps (received_at) govern watchdog timing.
-4. Core automaton: Q0 monitoring -> Q1 “Are you safe?” after 24h silence -> Q2 “Where are you?” after 72h without response -> Q3 attention/cascade after a further 48h -> Q4 liveliness-alert cycles every 120h. The database retains semantic alarm states; Q0-Q4 are stored separately as automaton nodes.
-5. Covert duress code / silent alarm that displays safe confirmation to hostiles while immediately escalating to emergency dispatch.
-6. Support Huawei wearable telemetry loss and phone heartbeat loss correlation.
-7. Idempotent notification cascade dispatching to pre-authorized prioritized emergency contacts with immutable last-known telemetry snapshots.
+The monitoring progression is represented as Q0–Q4:
 
-## Development
+1. **Q0 — Monitoring:** regular check-ins are being received.
+2. **Q1 — Check-in requested:** the operator has been silent for the first configured interval.
+3. **Q2 — Location requested:** silence continues and a location confirmation is needed.
+4. **Q3 — Attention cascade:** authorized contacts are notified according to the configured escalation policy.
+5. **Q4 — Liveliness alert:** longer-term follow-up cycles continue until the situation is resolved.
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+These are application states, not claims that the system can guarantee a rescue. In an active emergency, contact local emergency services directly.
+
+## Architecture
+
+- React, TypeScript, and Vite for the web interface
+- Supabase Auth for identity and sessions
+- Supabase PostgreSQL and Row Level Security for authoritative state
+- Supabase Edge Functions for API operations and escalation workflows
+- Zod for validation
+- Vitest for unit and component tests
+- Playwright for browser testing
+
+The browser UI lives under [`frontend/`](frontend/). Supabase functions and deployment notes are documented in [`supabase/functions/README.md`](supabase/functions/README.md). Database migrations belong in [`supabase/migrations/`](supabase/migrations/).
+
+The server is authoritative. The React client does not directly mutate safety state. Complete heartbeats require a valid location sample, and server timestamps govern watchdog timing. Device sequence numbers and idempotent dispatches are used to reduce replay and duplicate-notification problems.
+
+## Local development
+
+You need Node.js and npm. Then:
 
 ```sh
 git clone <this-repository-url>
-cd <repository-name>
-cd frontend
-npm i
+cd Soviet-DeadHand/frontend
+npm install
 npm run dev
 ```
 
-The browser UI lives entirely under `frontend/`. It uses Supabase Auth for session management and invokes the typed API in `frontend/src/lib/api.ts`; all application data queries, mutations, authorization checks, and sensitive-data operations run in `supabase/functions/`. See [`supabase/functions/README.md`](supabase/functions/README.md) for deployment and secret configuration.
+Useful checks from `frontend/`:
+
+```sh
+npm run test
+npm run lint
+npm run build
+```
+
+## Privacy and safety
+
+- Collect only the data required for the configured safety workflow.
+- Use trusted contacts who have explicitly agreed to receive alerts.
+- Never use this project to track another person without their informed consent.
+- Treat credentials, contact data, location, telemetry, and emergency events as highly sensitive.
+- Review local laws and emergency-contact expectations before deploying it for real-world use.
+
+If this README describes your current situation and you may be in immediate danger, stop working on the software and get a trusted person or local emergency service physically involved now.

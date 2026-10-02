@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ReadinessRail } from "@/components/deadhand/ReadinessRail";
 
+const EMBLEM_SRC = "/c4ff83c5eadddc1a6627fbce57d559e0.png";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -8,13 +10,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "24h silence detection, 72h safe challenge, 48h location challenge, and 120h liveliness-alert cycles.",
+          "Personal safety setup for check-ins, trusted contacts, and server-authoritative emergency escalation.",
       },
       { property: "og:title", content: "Dead Hand · Комплекс «Периметр»" },
       {
         property: "og:description",
         content:
-          "Server-authoritative personal safety watchdog with covert duress alarm and emergency contact cascade.",
+          "A defensive personal safety system for check-ins, trusted contacts, and emergency escalation.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -25,8 +27,8 @@ export const Route = createFileRoute("/")({
 
 const AUTOMATON_STAGES = [
   ["Q0", "НАБЛЮДЕНИЕ", "Monitoring. Registered devices report complete heartbeat signals."],
-  ["Q1", "ВЫ В БЕЗОПАСНОСТИ?", "Are you safe? Silence opens a 72h response window."],
-  ["Q2", "ГДЕ ВЫ?", "Where are you? A further 48h requires a direct response."],
+  ["Q1", "ВЫ В БЕЗОПАСНОСТИ?", "Are you safe? Silence opens the configured response window."],
+  ["Q2", "ГДЕ ВЫ?", "Where are you? A further silence requires a direct response."],
   ["Q3", "ВНИМАНИЕ!", "Attention. The emergency contact cascade is active."],
   ["Q4", "ТРЕВОГА ЖИВУЧЕСТИ", "Liveliness alert. Correct rescue returns the system to Q1."],
 ] as const;
@@ -40,37 +42,44 @@ const SETUP_STAGES = [
 
 function Landing() {
   return (
-    <main className="relative mx-auto min-h-screen max-w-6xl px-4 py-6 md:px-8 md:py-10">
+    <main className="landing-page relative mx-auto min-h-screen max-w-6xl px-4 py-6 md:px-8 md:py-10">
       <ReadinessRail />
-      <header className="flex items-center justify-between border-b border-border pb-3">
-        <div className="flex items-center gap-3">
-          <span className="inline-block h-3 w-3 rounded-full bg-radar animate-blink" />
-          <span className="font-display text-sm uppercase tracking-[0.3em] text-primary">
-            Мёртвая рука
+
+      <header className="landing-header">
+        <div className="landing-brand">
+          <span className="landing-brand__mark" aria-hidden="true">
+            01
           </span>
+          <div>
+            <p className="font-display text-sm uppercase tracking-[0.3em] text-primary">
+              Мёртвая рука
+            </p>
+            <p className="mt-1 text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
+              Комплекс «Периметр»
+            </p>
+          </div>
         </div>
         <Link
           to="/auth"
           className="border border-primary px-3 py-1.5 text-xs uppercase tracking-widest text-primary hover:bg-primary hover:text-primary-foreground"
         >
-          Вход · Sign in
+          Sign in
         </Link>
       </header>
 
-      <section className="grid gap-8 py-10 md:grid-cols-[1.3fr_1fr] md:py-16">
-        <div>
-          <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">
-            Комплекс «Периметр» · Web setup dossier
+      <section className="landing-hero">
+        <div className="landing-hero__copy">
+          <p className="landing-kicker">
+            Комплекс «Периметр» <span>· Web setup dossier</span>
           </p>
-          <h1 className="mt-4 font-display text-5xl uppercase leading-[0.95] text-primary glow-amber md:text-7xl">
+          <h1 className="mt-5 font-display text-5xl uppercase leading-[0.9] text-primary glow-amber md:text-8xl">
             Мёртвая
             <br />
             рука
           </h1>
-          <p className="mt-6 max-w-lg text-base leading-relaxed text-foreground/85">
-            Dead Hand is a defensive personal safety system. Establish the operator account, connect
-            the reporting devices, and authorize the people who should receive an emergency
-            dispatch.
+          <p className="mt-7 max-w-xl text-base leading-relaxed text-foreground/85">
+            A defensive personal safety system for check-ins, trusted contacts, and emergency
+            escalation when you cannot safely communicate.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
@@ -80,25 +89,61 @@ function Landing() {
               Begin setup
             </Link>
           </div>
-          <ul className="mt-10 grid gap-3 text-xs uppercase tracking-wider text-muted-foreground sm:grid-cols-2">
-            <li className="setup-rule">Very thin client</li>
-            <li className="setup-rule">Secured operatonal zones</li>
-            <li className="setup-rule">Covert duress code</li>
-            <li className="setup-rule">Replay-proof sequencing</li>
-          </ul>
+          <dl className="landing-facts mt-10">
+            <div>
+              <dt>Entry</dt>
+              <dd>/setup</dd>
+            </div>
+            <div>
+              <dt>Command post</dt>
+              <dd>/console</dd>
+            </div>
+            <div>
+              <dt>Doctrine</dt>
+              <dd>Q0–Q4</dd>
+            </div>
+          </dl>
         </div>
 
-        <div className="crt relative overflow-hidden p-5">
-          <div className="relative">
-            <div className="border-b border-border pb-3">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-primary">
-                Настройка системы · Setup dossier
-              </p>
-              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                Complete the required lines before using the Dashboard as the live command post.
-              </p>
-            </div>
-            <ol className="landing-setup-map mt-4">
+        <div className="landing-seal plate" aria-label="Soviet Dead Hand emblem">
+          <div className="landing-seal__header">
+            <span>System emblem</span>
+            <span>01 / 01</span>
+          </div>
+          <div className="landing-seal__art">
+            <span
+              className="landing-seal__crosshair landing-seal__crosshair--top"
+              aria-hidden="true"
+            />
+            <img src={EMBLEM_SRC} alt="Red star, hammer, sickle, and wheat emblem" />
+            <span
+              className="landing-seal__crosshair landing-seal__crosshair--bottom"
+              aria-hidden="true"
+            />
+          </div>
+          <div className="landing-seal__footer">
+            <strong>Safety-only system</strong>
+            <span>Not a replacement for emergency services.</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-border py-10">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="landing-kicker">Настройка системы · Setup dossier</p>
+            <h2 className="mt-2 font-display text-xl uppercase tracking-widest text-primary">
+              Establish the operator station
+            </h2>
+          </div>
+          <p className="max-w-sm text-xs leading-relaxed text-muted-foreground">
+            Complete the required lines before using the Dashboard as the live command post.
+          </p>
+        </div>
+
+        <div className="mt-6 grid gap-6 md:grid-cols-[1fr_1.25fr]">
+          <div className="crt p-5">
+            <ol className="landing-setup-map">
               {SETUP_STAGES.map(([code, ru, en, requirement]) => (
                 <li key={code}>
                   <span className="landing-setup-map__code">{code}</span>
@@ -114,32 +159,32 @@ function Landing() {
                 </li>
               ))}
             </ol>
+            <p className="mt-5 border-t border-border pt-3 text-xs uppercase tracking-[0.3em] text-radar glow-radar">
+              Канал зашифрован · Link sealed
+            </p>
           </div>
-          <p className="relative mt-5 border-t border-border pt-3 text-xs uppercase tracking-[0.3em] text-radar glow-radar">
-            Канал зашифрован · Link sealed
-          </p>
-        </div>
-      </section>
 
-      <section className="border-t border-border py-10">
-        <h2 className="font-display text-xl uppercase tracking-widest text-primary">
-          Доктрина эскалации · Escalation doctrine
-        </h2>
-        <ol className="mt-6 grid gap-3 md:grid-cols-5">
-          {AUTOMATON_STAGES.map(([code, ru, en], i) => (
-            <li key={code} className="plate relative p-4">
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                {code}
-              </div>
-              <div
-                className={`mt-1 font-display text-lg ${i === 3 || i === 4 ? "text-destructive glow-alarm" : i === 0 ? "text-radar" : "text-primary"}`}
-              >
-                {ru}
-              </div>
-              <p className="mt-2 text-xs leading-relaxed text-foreground/75">{en}</p>
-            </li>
-          ))}
-        </ol>
+          <div>
+            <h2 className="font-display text-xl uppercase tracking-widest text-primary">
+              Доктрина эскалации · Escalation doctrine
+            </h2>
+            <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+              {AUTOMATON_STAGES.map(([code, ru, en], i) => (
+                <li key={code} className="plate relative p-4">
+                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                    {code}
+                  </div>
+                  <div
+                    className={`mt-1 font-display text-lg ${i === 3 || i === 4 ? "text-destructive glow-alarm" : i === 0 ? "text-radar" : "text-primary"}`}
+                  >
+                    {ru}
+                  </div>
+                  <p className="mt-2 text-xs leading-relaxed text-foreground/75">{en}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
       </section>
 
       <footer className="border-t border-border py-6 text-[10px] uppercase tracking-widest text-muted-foreground">
