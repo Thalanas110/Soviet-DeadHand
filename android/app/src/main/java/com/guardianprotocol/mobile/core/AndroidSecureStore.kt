@@ -39,19 +39,7 @@ class AndroidSecureStore(context: Context) : SecretStore {
     }
 
     private fun secretKey(): SecretKey {
-        val existing = keyStore.getKey(KEY_ALIAS, null) as? SecretKey
-        if (existing != null) return existing
-        val generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE)
-        generator.init(
-            KeyGenParameterSpec.Builder(
-                KEY_ALIAS,
-                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
-            )
-                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-                .build(),
-        )
-        return generator.generateKey()
+        return AndroidKeystoreKey.getOrCreate(keyStore, KEY_ALIAS)
     }
 
     private companion object {
@@ -61,4 +49,24 @@ class AndroidSecureStore(context: Context) : SecretStore {
         const val TRANSFORMATION = "AES/GCM/NoPadding"
         const val SEPARATOR = ":"
     }
+}
+
+object AndroidKeystoreKey {
+    fun getOrCreate(keyStore: KeyStore, alias: String): SecretKey {
+        val existing = keyStore.getKey(alias, null) as? SecretKey
+        if (existing != null) return existing
+        val generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE)
+        generator.init(
+            KeyGenParameterSpec.Builder(
+                alias,
+                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
+            )
+                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                .build(),
+        )
+        return generator.generateKey()
+    }
+
+    private const val ANDROID_KEYSTORE = "AndroidKeyStore"
 }

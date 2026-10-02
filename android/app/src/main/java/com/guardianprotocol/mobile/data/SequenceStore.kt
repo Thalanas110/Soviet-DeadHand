@@ -31,3 +31,14 @@ class SequenceStore(private val storage: CounterStore) {
         return next
     }
 }
+
+class SecureCounterStore(
+    private val secrets: SecretStore,
+    private val key: String = "telemetry_sequence",
+) : CounterStore {
+    override fun read(): Long = secrets.get(key)?.toLongOrNull() ?: 0L
+
+    override fun write(value: Long) {
+        secrets.put(key, value.toString())
+    }
+}
