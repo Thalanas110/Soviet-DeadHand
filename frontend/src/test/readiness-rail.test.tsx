@@ -14,3 +14,11 @@ it("defines the command ledger red signal token and reduced-motion rule", () => 
   expect(css).toContain("--signal-red: #ff3b30");
   expect(css).toContain("prefers-reduced-motion: reduce");
 });
+
+it("uses the custom SVG favicon", () => {
+  const html = readFileSync("index.html", "utf8");
+  const favicon = readFileSync("public/favicon.svg", "utf8");
+  expect(html).toContain('href="/favicon.svg"');
+  expect(favicon).toContain('viewBox="0 0 64 64"');
+  expect(favicon).toContain("#ff3b30");
+});
