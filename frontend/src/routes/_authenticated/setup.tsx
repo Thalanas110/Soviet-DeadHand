@@ -1,14 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { SetupStage } from "@/components/deadhand/SetupStage";
 import { Panel, Shell } from "@/components/deadhand/Shell";
 import { useOperator } from "@/hooks/use-operator";
-import { contactsApi, operatorApi } from "@/lib/api";
+import { contactsApi } from "@/lib/api";
+import { tokenForDeviceKind, type SetupDeviceToken } from "@/lib/setup-device-token";
+import {
+  authorizeSetupContact,
+  registerSetupDevice,
+  saveSetupPasswords,
+} from "@/lib/setup-actions";
 import {
   deriveSetupReadiness,
   firstIncompleteStage,
+  initialSetupStage,
   type SetupStageId,
 } from "@/lib/setup-readiness";
 import { readSetPinsForm, setPinsValidationMessage } from "@/lib/schemas";
@@ -76,20 +83,22 @@ function Setup() {
     phone: "",
     priority: 1,
   });
-  const [deviceToken, setDeviceToken] = useState<string | null>(null);
+  const [deviceToken, setDeviceToken] = useState<SetupDeviceToken | null>(null);
   const [busy, setBusy] = useState(false);
+  const stageInitialized = useRef(false);
 
   const readiness = useMemo(
     () => deriveSetupReadiness(data, contactsQuery.data),
     [data, contactsQuery.data],
   );
-  const firstStage = firstIncompleteStage(readiness);
+  const firstStage = initialSetupStage(readiness);
+  const hasRemainingSetup = firstIncompleteStage(readiness) !== null;
 
   useEffect(() => {
-    if (firstStage && activeStage === "passwords" && !readiness.passwords) {
-      setActiveStage(firstStage);
-    }
-  }, [activeStage, firstStage, readiness.passwords]);
+    if (operatorPending || contactsQuery.isPending || stageInitialized.current) return;
+    stageInitialized.current = true;
+    setActiveStage(firstStage);
+  }, [contactsQuery.isPending, firstStage, operatorPending]);
 
   async function savePasswords(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -102,8 +111,7 @@ function Setup() {
 
     setBusy(true);
     try {
-      const result = await operatorApi.action({ action: "setPins", ...values });
-      if (!result.ok) throw new Error(result.error ?? "Passwords rejected");
+      await saveSetupPasswords(values);
       toast.success("Passwords saved");
       event.currentTarget.reset();
       await qc.invalidateQueries({ queryKey: ["operator"] });
@@ -121,13 +129,12 @@ function Setup() {
     try {
       const payload =
         activeStage === "wearable" ? { ...device, kind: "wearable" as const } : device;
-      const result = await operatorApi.action({ action: "registerDevice", ...payload });
-      if (!result.token) throw new Error("Registration failed");
-      setDeviceToken(result.token);
+      const registered = await registerSetupDevice(payload);
+      setDeviceToken(registered);
       setDevice({ label: "", kind: payload.kind });
       toast.success("Device registered");
       await qc.invalidateQueries({ queryKey: ["operator"] });
-      if (payload.kind === "phone") setActiveStage("cascade");
+      if (registered.kind === "phone") setActiveStage("cascade");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Registration failed");
     } finally {
@@ -139,7 +146,7 @@ function Setup() {
     event.preventDefault();
     setBusy(true);
     try {
-      await contactsApi.add(contact);
+      await authorizeSetupContact(contact);
       setContact({
         alias: "",
         name: "",
@@ -161,7 +168,7 @@ function Setup() {
   const error = operatorError ?? contactsQuery.error;
 
   return (
-    <Shell callsign={data?.profile?.callsign} railActive={Boolean(firstStage)}>
+    <Shell callsign={data?.profile?.callsign} railActive={hasRemainingSetup}>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-4">
         <div>
           <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
@@ -194,6 +201,24 @@ function Setup() {
         <div className="grid gap-3 lg:grid-cols-[0.82fr_1.4fr]">
           <div className="space-y-3">
             <Panel title="Readiness sequence" code="Q0–Q4">
+              <p className="mb-3 text-[10px] uppercase tracking-widest text-muted-foreground">
+                Setup progression only · not live alarm state
+              </p>
+              <ol className="setup-progress mb-4">
+                {[
+                  ["Q0", "PROFILE", Boolean(data?.profile)],
+                  ["Q1", "ACCESS", readiness.passwords],
+                  ["Q2", "HANDSET", readiness.handset],
+                  ["Q3", "CASCADE", readiness.cascade],
+                  ["Q4", "WEARABLE", readiness.wearable],
+                ].map(([code, label, ready]) => (
+                  <li key={code} className={ready ? "is-ready" : ""}>
+                    <span>{code}</span>
+                    <span>{label}</span>
+                    <span>{ready ? "READY" : "OPEN"}</span>
+                  </li>
+                ))}
+              </ol>
               <div className="setup-map">
                 {STAGES.map((stage, index) => (
                   <button
@@ -253,7 +278,7 @@ function Setup() {
                     device={device}
                     onChange={setDevice}
                     onSubmit={registerDevice}
-                    token={deviceToken}
+                    token={tokenForDeviceKind(deviceToken, "phone")}
                   />
                 )}
                 {stage.id === "cascade" && (
@@ -270,7 +295,7 @@ function Setup() {
                     device={{ ...device, kind: "wearable" }}
                     onChange={(next) => setDevice({ ...next, kind: "wearable" })}
                     onSubmit={registerDevice}
-                    token={deviceToken}
+                    token={tokenForDeviceKind(deviceToken, "wearable")}
                   />
                 )}
               </SetupStage>
@@ -282,7 +307,7 @@ function Setup() {
   );
 }
 
-function PasswordForm({
+export function PasswordForm({
   busy,
   configured,
   onSubmit,
@@ -298,7 +323,15 @@ function PasswordForm({
       {configured && (
         <label className="block text-[10px] uppercase tracking-widest text-muted-foreground">
           Current password
-          <input name="current" type="password" minLength={8} maxLength={64} className={input} />
+          <input
+            name="current"
+            required
+            type="password"
+            minLength={8}
+            maxLength={64}
+            autoComplete="current-password"
+            className={input}
+          />
         </label>
       )}
       <label className="block text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -309,6 +342,7 @@ function PasswordForm({
           type="password"
           minLength={8}
           maxLength={64}
+          autoComplete="new-password"
           className={input}
         />
       </label>
@@ -320,6 +354,7 @@ function PasswordForm({
           type="password"
           minLength={8}
           maxLength={64}
+          autoComplete="new-password"
           className={input}
         />
       </label>

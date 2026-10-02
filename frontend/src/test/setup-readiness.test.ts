@@ -4,6 +4,7 @@ import {
   deriveSetupReadiness,
   firstIncompleteStage,
   hasRequiredSetup,
+  initialSetupStage,
 } from "@/lib/setup-readiness";
 
 const contact = (authorized = true): Contact => ({
@@ -116,5 +117,16 @@ describe("setup readiness", () => {
 
     expect(firstIncompleteStage(readiness)).toBe("wearable");
     expect(hasRequiredSetup(readiness)).toBe(true);
+  });
+
+  it("starts a partially configured operator at the first incomplete stage", () => {
+    expect(
+      initialSetupStage({
+        passwords: true,
+        handset: false,
+        cascade: false,
+        wearable: false,
+      }),
+    ).toBe("handset");
   });
 });

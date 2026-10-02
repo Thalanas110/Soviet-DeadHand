@@ -24,6 +24,10 @@ export function firstIncompleteStage(readiness: SetupReadiness): SetupStageId | 
   );
 }
 
+export function initialSetupStage(readiness: SetupReadiness): SetupStageId {
+  return firstIncompleteStage(readiness) ?? "passwords";
+}
+
 export function hasRequiredSetup(readiness: SetupReadiness) {
   return readiness.passwords && readiness.handset && readiness.cascade;
 }

@@ -48,6 +48,13 @@ describe("App routing", () => {
     expect(landing).toContain("Настройка");
   });
 
+  it("renders explicit Q0 through Q4 setup progression", () => {
+    const setup = readFileSync("src/routes/_authenticated/setup.tsx", "utf8");
+    for (const code of ["Q0", "Q1", "Q2", "Q3", "Q4"]) {
+      expect(setup).toContain(code);
+    }
+  });
+
   it("renders the not-found route", async () => {
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
 

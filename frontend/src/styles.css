@@ -146,6 +146,25 @@
   position: relative;
 }
 
+.setup-progress {
+  border-top: 1px solid var(--border);
+}
+
+.setup-progress li {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  padding: 0.45rem 0;
+  color: var(--muted-foreground);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+}
+
+.setup-progress li.is-ready {
+  color: var(--radar);
+}
+
 .setup-map::before {
   position: absolute;
   inset-block: 0.8rem;

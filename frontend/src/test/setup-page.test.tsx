@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { SetupStage } from "@/components/deadhand/SetupStage";
+import { PasswordForm } from "@/routes/_authenticated/setup";
 
 describe("SetupStage", () => {
   it("shows required versus incomplete without exposing password values", () => {
@@ -23,5 +24,11 @@ describe("SetupStage", () => {
 
     expect(screen.getByText(/Recommended/)).toBeInTheDocument();
     expect(screen.getByText(/Ready/)).toBeInTheDocument();
+  });
+
+  it("requires the current password when changing configured passwords", () => {
+    render(<PasswordForm busy={false} configured onSubmit={() => undefined} />);
+
+    expect(screen.getByLabelText("Current password")).toBeRequired();
   });
 });
