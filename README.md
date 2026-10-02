@@ -32,7 +32,7 @@ Core Doctrine & Rules:
 1. The server (Supabase/PostgreSQL) is authoritative. React is UI only and never directly mutates safety state.
 2. Every complete safety heartbeat requires a valid location sample. Without location, it is incomplete diagnostic telemetry only and must not update last_complete_heartbeat_at.
 3. Monotonic sequence numbers per device to prevent replay attacks. Server timestamps (received_at) govern watchdog timing.
-4. Core state machine: NORMAL -> ARE_YOU_ALIVE (72h server timer) -> PROLONGED_NO_RESPONSE (48h server timer) -> CRITICAL_UNRESOLVED (EXECUTE_EMERGENCY_NOTIFICATION_CASCADE / RELEASE_ALL_MISSILES) -> RESOLVED.
+4. Core state machine: Q0 monitoring -> Q1 “Are you safe?” after 24h silence -> Q2 “Where are you?” after 72h without response -> Q3 attention/cascade after a further 48h -> Q4 liveliness-alert cycles every 120h.
 5. Covert duress code / silent alarm that displays safe confirmation to hostiles while immediately escalating to emergency dispatch.
 6. Support Huawei wearable telemetry loss and phone heartbeat loss correlation.
 7. Idempotent notification cascade dispatching to pre-authorized prioritized emergency contacts with immutable last-known telemetry snapshots.

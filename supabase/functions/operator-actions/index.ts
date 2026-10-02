@@ -165,6 +165,14 @@ async function execute(userId: string, token: string, input: Action) {
       if (error) throw new Error("Alarm request failed");
       return { ok: true, acknowledged_at: new Date().toISOString() };
     }
+    case "unsafeReport": {
+      const { error } = await db.rpc("api_unsafe_report", {
+        _user: userId,
+        _device: input.deviceId,
+      });
+      if (error) throw new Error("Unsafe report failed");
+      return { ok: true, acknowledged_at: new Date().toISOString() };
+    }
     case "heartbeat":
       return callIngest(userId, input.deviceId, input);
   }

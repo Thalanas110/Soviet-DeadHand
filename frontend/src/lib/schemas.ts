@@ -70,12 +70,14 @@ export function locationFreshness(
 }
 
 export const STATE_LABEL: Record<string, { code: string; ru: string; en: string }> = {
-  NORMAL: { code: "СОСТ-0", ru: "НОРМА", en: "Normal" },
-  ARE_YOU_ALIVE: { code: "СОСТ-1", ru: "ВЫ ЖИВЫ?", en: "Are you alive" },
-  PROLONGED_NO_RESPONSE: { code: "СОСТ-2", ru: "НЕТ ОТВЕТА", en: "Prolonged no response" },
-  CRITICAL_UNRESOLVED: { code: "СОСТ-3", ru: "КРИТИЧЕСКОЕ", en: "Critical — cascade executed" },
-  RESOLVED: { code: "СОСТ-4", ru: "УРЕГУЛИРОВАНО", en: "Resolved" },
+  Q0: { code: "СОСТ-0", ru: "НАБЛЮДЕНИЕ", en: "Monitoring" },
+  Q1: { code: "СОСТ-1", ru: "ВЫ В БЕЗОПАСНОСТИ?", en: "Are you safe?" },
+  Q2: { code: "СОСТ-2", ru: "ГДЕ ВЫ?", en: "Where are you?" },
+  Q3: { code: "СОСТ-3", ru: "ВНИМАНИЕ!", en: "Attention — cascade active" },
+  Q4: { code: "СОСТ-4", ru: "ТРЕВОГА ЖИВУЧЕСТИ", en: "Liveliness alert" },
 };
 
-export const AYA_HOURS = 72;
-export const PROLONGED_HOURS = 48;
+export const SILENCE_HOURS = 24;
+export const SAFE_WINDOW_HOURS = 72;
+export const LOCATION_WINDOW_HOURS = 48;
+export const ALERT_CYCLE_HOURS = 120;

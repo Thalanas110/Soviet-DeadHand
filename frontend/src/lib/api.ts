@@ -10,6 +10,7 @@ export type OperatorAction =
   | { action: "standDown"; pin: string }
   | ({ action: "checkIn" } & Telemetry & { deviceId: string; pin: string })
   | { action: "silentAlarm"; deviceId: string | null }
+  | { action: "unsafeReport"; deviceId: string | null }
   | ({ action: "heartbeat" } & Telemetry & { deviceId: string });
 
 export type OperatorSnapshot = {
@@ -27,6 +28,7 @@ export type OperatorStatus = {
   armed: boolean;
   armed_at: string | null;
   state_entered_at: string;
+  last_any_heartbeat_at: string | null;
   last_complete_heartbeat_at: string | null;
 };
 export type Device = {

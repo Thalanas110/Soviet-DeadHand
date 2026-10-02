@@ -27,3 +27,5 @@ supabase functions deploy telemetry-ingest --no-verify-jwt
 ```
 
 The SQL migration remains responsible for RLS, immutable ledgers, state transitions, and scheduled watchdog behavior.
+
+The watchdog follows the Q0–Q4 automaton documented in the repository root: 24h silence enters Q1, Q1 lasts 72h, Q2 lasts 48h, Q3 fires the cascade, and Q3/Q4 repeat their alert cycle every 120h.

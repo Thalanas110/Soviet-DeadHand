@@ -76,6 +76,10 @@ export const actionSchema = z.union([
     deviceId: z.string().uuid().nullable(),
   }),
   z.object({
+    action: z.literal("unsafeReport"),
+    deviceId: z.string().uuid().nullable(),
+  }),
+  z.object({
     action: z.literal("heartbeat"),
     deviceId: z.string().uuid(),
     ...telemetrySchema.shape,

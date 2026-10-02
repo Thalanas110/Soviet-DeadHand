@@ -7,7 +7,13 @@ import { PinPad } from "@/components/deadhand/PinPad";
 import { useOperator, useNow } from "@/hooks/use-operator";
 import { operatorApi } from "@/lib/api";
 import { collectTelemetry, getHandsetId, setHandsetId } from "@/lib/telemetry";
-import { STATE_LABEL, AYA_HOURS, PROLONGED_HOURS } from "@/lib/schemas";
+import {
+  ALERT_CYCLE_HOURS,
+  LOCATION_WINDOW_HOURS,
+  SAFE_WINDOW_HOURS,
+  SILENCE_HOURS,
+  STATE_LABEL,
+} from "@/lib/schemas";
 
 export const Route = createFileRoute("/_authenticated/console")({
   head: () => ({
@@ -28,19 +34,25 @@ function Console() {
   const [coverOpen, setCoverOpen] = useState(false);
 
   const st = data?.status;
-  const label = STATE_LABEL[st?.state ?? "NORMAL"] ?? { code: "", ru: "", en: "" };
+  const label = STATE_LABEL[st?.state ?? "Q0"] ?? { code: "", ru: "", en: "" };
   const handsetId = getHandsetId();
 
   let deadline: number | null = null;
   let deadlineLabel = "";
   if (st?.armed) {
-    if (st.state === "NORMAL" || st.state === "RESOLVED") {
-      const base = st.last_complete_heartbeat_at ?? st.armed_at ?? st.state_entered_at;
-      deadline = new Date(base).getTime() + AYA_HOURS * 3600_000;
-      deadlineLabel = "До запроса «Вы живы?»";
-    } else if (st.state === "ARE_YOU_ALIVE") {
-      deadline = new Date(st.state_entered_at).getTime() + PROLONGED_HOURS * 3600_000;
-      deadlineLabel = "До каскада оповещения";
+    if (st.state === "Q0") {
+      const base = st.last_any_heartbeat_at ?? st.armed_at ?? st.state_entered_at;
+      deadline = new Date(base).getTime() + SILENCE_HOURS * 3600_000;
+      deadlineLabel = "Until safe challenge";
+    } else if (st.state === "Q1") {
+      deadline = new Date(st.state_entered_at).getTime() + SAFE_WINDOW_HOURS * 3600_000;
+      deadlineLabel = "Until location challenge";
+    } else if (st.state === "Q2") {
+      deadline = new Date(st.state_entered_at).getTime() + LOCATION_WINDOW_HOURS * 3600_000;
+      deadlineLabel = "Until attention mode";
+    } else if (st.state === "Q3" || st.state === "Q4") {
+      deadline = new Date(st.state_entered_at).getTime() + ALERT_CYCLE_HOURS * 3600_000;
+      deadlineLabel = "Until next alert cycle";
     }
   }
 
@@ -66,7 +78,7 @@ function Console() {
         const deviceId = await ensureHandset();
         const t = await collectTelemetry(true);
         const r = await operatorApi.action({ action: "checkIn", ...t, deviceId, pin });
-        if (r.ok) toast.success("ПРИНЯТО · Check-in acknowledged");
+        if (r.ok) toast.success("Check-in received");
         else
           toast.error(
             r.error === "LOCATION_REQUIRED"
@@ -99,16 +111,22 @@ function Console() {
   async function fireAlarm() {
     setCoverOpen(false);
     await operatorApi.action({ action: "silentAlarm", deviceId: handsetId }).catch(() => null);
-    toast.success("ПРИНЯТО · Check-in acknowledged");
+    toast.success("Check-in received");
+  }
+
+  async function reportUnsafe() {
+    await operatorApi.action({ action: "unsafeReport", deviceId: handsetId }).catch(() => null);
+    qc.invalidateQueries({ queryKey: ["operator"] });
+    toast.success("Check-in received");
   }
 
   const phones = data?.devices.filter((d) => d.kind === "phone" && !d.revoked_at) ?? [];
   const wear = data?.devices.filter((d) => d.kind === "wearable" && !d.revoked_at) ?? [];
   const fresh = (iso?: string | null) => !!iso && now - new Date(iso).getTime() < 6 * 3600_000;
   const tone =
-    st?.state === "CRITICAL_UNRESOLVED"
+    st?.state === "Q3" || st?.state === "Q4"
       ? "text-destructive glow-alarm"
-      : st?.state === "NORMAL" || st?.state === "RESOLVED"
+      : st?.state === "Q0"
         ? "text-radar glow-radar"
         : "text-primary glow-amber";
 
@@ -184,6 +202,12 @@ function Console() {
                   </button>
                 </div>
               )}
+              <button
+                onClick={reportUnsafe}
+                className="mt-2 w-full border border-primary/60 py-2 text-[10px] uppercase tracking-widest text-primary"
+              >
+                Report unsafe
+              </button>
             </div>
 
             <Panel title="Каналы связи · Links">

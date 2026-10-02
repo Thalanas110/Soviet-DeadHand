@@ -16,6 +16,7 @@
 - `supabase/migrations/` remains the source of truth for schema, RLS, and PostgreSQL domain procedures.
 - Environment values are not replaced in this change; new Supabase URLs and keys will be supplied separately.
 - Preserve the existing innocuous silent-alarm acknowledgement and stable `{ ok, error }` mutation results.
+- The authoritative state machine is `pseudocode.txt`/`automaton.png`: Q0 monitoring, Q1 after 24h silence, Q2 after a 72h safe-response window, Q3 after a further 48h location-response window, and Q4 120h liveliness-alert cycles. Incorrect passwords classify as duress; Q4 correct responses return to Q1, while duress/unsafe responses remain in Q4.
 
 ---
 

@@ -4,9 +4,17 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Dead Hand · Комплекс «Периметр» — Personal Safety Watchdog" },
-      { name: "description", content: "If you go silent, Dead Hand notices. 72h watchdog, covert duress code, and an encrypted emergency contact cascade." },
+      {
+        name: "description",
+        content:
+          "24h silence detection, 72h safe challenge, 48h location challenge, and 120h liveliness-alert cycles.",
+      },
       { property: "og:title", content: "Dead Hand · Комплекс «Периметр»" },
-      { property: "og:description", content: "Server-authoritative personal safety watchdog with covert duress alarm and emergency contact cascade." },
+      {
+        property: "og:description",
+        content:
+          "Server-authoritative personal safety watchdog with covert duress alarm and emergency contact cascade.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -14,13 +22,29 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-const STAGES = [
-  ["СОСТ-0", "НОРМА", "Complete heartbeats with location keep the watchdog satisfied."],
-  ["СОСТ-1", "ВЫ ЖИВЫ?", "72 hours without a complete heartbeat. You are challenged to check in."],
-  ["СОСТ-2", "НЕТ ОТВЕТА", "48 more hours with no response. The incident is escalated."],
-  ["СОСТ-3", "КРИТИЧЕСКОЕ", "Emergency notification cascade executes to your authorized contacts."],
-  ["СОСТ-4", "УРЕГУЛИРОВАНО", "You check in with your PIN. The incident is closed on the record."],
-];
+const AUTOMATON_STAGES = [
+  [
+    "Q0",
+    "MONITORING",
+    "Phone, wearable, and complete heartbeat signals keep the system satisfied.",
+  ],
+  [
+    "Q1",
+    "ARE YOU SAFE?",
+    "After 24h of silence, you have 72h to provide a correct response or heartbeat.",
+  ],
+  [
+    "Q2",
+    "WHERE ARE YOU?",
+    "After Q1 expires, you have 48h to respond. This state exits only on a response.",
+  ],
+  ["Q3", "ATTENTION!", "The emergency cascade is active and reminders repeat every 120h."],
+  [
+    "Q4",
+    "LIVELINESS ALERT",
+    "Correct rescue returns to Q1; duress and unsafe reports remain silently monitored.",
+  ],
+] as const;
 
 function Landing() {
   return (
@@ -28,28 +52,38 @@ function Landing() {
       <header className="flex items-center justify-between border-b border-border pb-3">
         <div className="flex items-center gap-3">
           <span className="inline-block h-3 w-3 rounded-full bg-radar animate-blink" />
-          <span className="font-display text-sm uppercase tracking-[0.3em] text-primary">Мёртвая рука</span>
+          <span className="font-display text-sm uppercase tracking-[0.3em] text-primary">
+            Мёртвая рука
+          </span>
         </div>
-        <Link to="/auth" className="border border-primary px-3 py-1.5 text-xs uppercase tracking-widest text-primary hover:bg-primary hover:text-primary-foreground">
+        <Link
+          to="/auth"
+          className="border border-primary px-3 py-1.5 text-xs uppercase tracking-widest text-primary hover:bg-primary hover:text-primary-foreground"
+        >
           Вход · Sign in
         </Link>
       </header>
 
       <section className="grid gap-8 py-10 md:grid-cols-[1.3fr_1fr] md:py-16">
         <div>
-          <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Комплекс «Периметр» · Personal edition</p>
+          <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">
+            Комплекс «Периметр» · Personal edition
+          </p>
           <h1 className="mt-4 font-display text-5xl uppercase leading-[0.95] text-primary glow-amber md:text-7xl">
             Dead
             <br />
             Hand
           </h1>
           <p className="mt-6 max-w-lg text-base leading-relaxed text-foreground/85">
-            A defensive personal safety system. Your handset and wearable report in. If they go silent, the server
-            notices, challenges you, and, if you still don't answer, alerts the people you trust with your last known
-            position.
+            A defensive personal safety system. Your handset and wearable report in. If they go
+            silent, the server notices, challenges you, and, if you still don't answer, alerts the
+            people you trust with your last known position.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/auth" className="bg-primary px-6 py-3 font-display text-sm uppercase tracking-widest text-primary-foreground hover:brightness-110">
+            <Link
+              to="/auth"
+              className="bg-primary px-6 py-3 font-display text-sm uppercase tracking-widest text-primary-foreground hover:brightness-110"
+            >
               Взвести систему · Arm the system
             </Link>
           </div>
@@ -65,20 +99,36 @@ function Landing() {
           <div className="relative mx-auto aspect-square max-w-xs rounded-full border border-radar/40">
             <div className="absolute inset-[18%] rounded-full border border-radar/30" />
             <div className="absolute inset-[36%] rounded-full border border-radar/20" />
-            <div className="absolute inset-0 animate-sweep rounded-full" style={{ background: "conic-gradient(from 0deg, transparent 0 300deg, color-mix(in oklch, var(--color-radar) 45%, transparent) 360deg)" }} />
+            <div
+              className="absolute inset-0 animate-sweep rounded-full"
+              style={{
+                background:
+                  "conic-gradient(from 0deg, transparent 0 300deg, color-mix(in oklch, var(--color-radar) 45%, transparent) 360deg)",
+              }}
+            />
             <div className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-radar" />
           </div>
-          <p className="relative mt-4 text-center text-xs uppercase tracking-[0.3em] text-radar glow-radar">Канал зашифрован · Link sealed</p>
+          <p className="relative mt-4 text-center text-xs uppercase tracking-[0.3em] text-radar glow-radar">
+            Канал зашифрован · Link sealed
+          </p>
         </div>
       </section>
 
       <section className="border-t border-border py-10">
-        <h2 className="font-display text-xl uppercase tracking-widest text-primary">Escalation doctrine</h2>
+        <h2 className="font-display text-xl uppercase tracking-widest text-primary">
+          Escalation doctrine
+        </h2>
         <ol className="mt-6 grid gap-3 md:grid-cols-5">
-          {STAGES.map(([code, ru, en], i) => (
+          {AUTOMATON_STAGES.map(([code, ru, en], i) => (
             <li key={code} className="plate relative p-4">
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{code}</div>
-              <div className={`mt-1 font-display text-lg ${i === 3 ? "text-destructive glow-alarm" : i === 0 || i === 4 ? "text-radar" : "text-primary"}`}>{ru}</div>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                {code}
+              </div>
+              <div
+                className={`mt-1 font-display text-lg ${i === 3 || i === 4 ? "text-destructive glow-alarm" : i === 0 ? "text-radar" : "text-primary"}`}
+              >
+                {ru}
+              </div>
               <p className="mt-2 text-xs leading-relaxed text-foreground/75">{en}</p>
             </li>
           ))}

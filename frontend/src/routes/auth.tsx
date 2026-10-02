@@ -39,9 +39,14 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "up") {
-        const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin + "/auth" } });
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: window.location.origin + "/auth" },
+        });
         if (error) throw error;
-        if (!data.session) toast.success("Confirmation sent. Check your email to activate the account.");
+        if (!data.session)
+          toast.success("Confirmation sent. Check your email to activate the account.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -65,27 +70,55 @@ function AuthPage() {
     <main className="flex min-h-screen items-center justify-center px-4">
       <div className="plate relative w-full max-w-sm p-6">
         <div className="hazard -mx-6 -mt-6 mb-6 h-2" />
-        <p className="text-[10px] uppercase tracking-[0.35em] text-muted-foreground">Пост управления · Command post</p>
-        <h1 className="mt-2 font-display text-2xl uppercase text-primary glow-amber">{mode === "in" ? "Допуск" : "Регистрация"}</h1>
-        <p className="text-xs uppercase tracking-widest text-muted-foreground">{mode === "in" ? "Operator sign in" : "New operator"}</p>
+        <p className="text-[10px] uppercase tracking-[0.35em] text-muted-foreground">
+          Пост управления · Command post
+        </p>
+        <h1 className="mt-2 font-display text-2xl uppercase text-primary glow-amber">
+          {mode === "in" ? "Допуск" : "Регистрация"}
+        </h1>
+        <p className="text-xs uppercase tracking-widest text-muted-foreground">
+          {mode === "in" ? "Operator sign in" : "New operator"}
+        </p>
 
         <form onSubmit={submit} className="mt-6 space-y-3">
           <label className="block text-[10px] uppercase tracking-widest text-muted-foreground">
             Email
-            <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1 w-full border border-input bg-panel px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary" />
+            <input
+              required
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 w-full border border-input bg-panel px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary"
+            />
           </label>
           <label className="block text-[10px] uppercase tracking-widest text-muted-foreground">
             Password
-            <input required type="password" minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} className="mt-1 w-full border border-input bg-panel px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary" />
+            <input
+              required
+              type="password"
+              minLength={8}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 w-full border border-input bg-panel px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary"
+            />
           </label>
-          <button disabled={busy} className="w-full bg-primary py-3 font-display text-sm uppercase tracking-widest text-primary-foreground disabled:opacity-50">
+          <button
+            disabled={busy}
+            className="w-full bg-primary py-3 font-display text-sm uppercase tracking-widest text-primary-foreground disabled:opacity-50"
+          >
             {busy ? "…" : mode === "in" ? "Войти · Enter" : "Создать · Create"}
           </button>
         </form>
-        <button onClick={google} className="mt-3 w-full border border-border py-3 text-xs uppercase tracking-widest hover:border-primary">
+        <button
+          onClick={google}
+          className="mt-3 w-full border border-border py-3 text-xs uppercase tracking-widest hover:border-primary"
+        >
           Continue with Google
         </button>
-        <button onClick={() => setMode(mode === "in" ? "up" : "in")} className="mt-4 w-full text-xs uppercase tracking-widest text-muted-foreground hover:text-primary">
+        <button
+          onClick={() => setMode(mode === "in" ? "up" : "in")}
+          className="mt-4 w-full text-xs uppercase tracking-widest text-muted-foreground hover:text-primary"
+        >
           {mode === "in" ? "No clearance? Register" : "Have clearance? Sign in"}
         </button>
       </div>
