@@ -47,6 +47,13 @@ Deno.serve((request) => {
       _loc_ts: parsed.data.location
         ? new Date(parsed.data.location.timestamp).toISOString()
         : null,
+      _heart_rate_bpm: parsed.data.heartRateBpm ?? null,
+      _heart_rate_ts: parsed.data.heartRateTimestamp
+        ? new Date(parsed.data.heartRateTimestamp).toISOString()
+        : null,
+      _wearable_sync_ts: parsed.data.wearableSyncTimestamp
+        ? new Date(parsed.data.wearableSyncTimestamp).toISOString()
+        : null,
     });
     if (error)
       throw new HttpError(
