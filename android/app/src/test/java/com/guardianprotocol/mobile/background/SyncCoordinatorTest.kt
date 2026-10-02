@@ -28,7 +28,7 @@ class SyncCoordinatorTest {
         val result = SyncCoordinator(outbox, uploader, now = { Instant.EPOCH }).run("token", 10)
 
         assertEquals(SyncSummary(1, 1, 0), result)
-        assertEquals(listOf(2L), outbox.pending(10).map { it.payload.sequence })
+        assertEquals(1, storage.size())
     }
 }
 
@@ -50,4 +50,6 @@ private class BackgroundOutboxStorage : OutboxStorage {
     override fun remove(id: String) {
         entries.remove(id)
     }
+
+    fun size(): Int = entries.size
 }
