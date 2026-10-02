@@ -42,6 +42,11 @@ export const setPinsSchema = z
     path: ["duress"],
   });
 
+export function setPinsValidationMessage(input: unknown): string | null {
+  const result = setPinsSchema.safeParse(input);
+  return result.success ? null : (result.error.issues[0]?.message ?? "Invalid passwords");
+}
+
 export const contactSchema = z.object({
   alias: z.string().trim().min(1).max(40),
   name: z.string().trim().min(1).max(100),

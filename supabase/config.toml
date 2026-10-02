@@ -1,4 +1,4 @@
-project_id = "xquubipfrjpjyljxjwkr"
+project_id = "bupkgxmvxkafwmxxkmtr"
 
 # Device telemetry uses an application-issued device token rather than a Supabase JWT.
 [functions.telemetry-ingest]

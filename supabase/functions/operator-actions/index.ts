@@ -187,7 +187,19 @@ Deno.serve((request) => {
       throw new HttpError(405, "METHOD_NOT_ALLOWED");
     const auth = await requireAuth(request);
     const parsed = actionSchema.safeParse(await body<unknown>(request));
-    if (!parsed.success) throw new HttpError(400, "INVALID_REQUEST");
+    if (!parsed.success) {
+      return json(
+        {
+          error: "INVALID_REQUEST",
+          details: parsed.error.issues.map(({ code, message, path }) => ({
+            code,
+            message,
+            path,
+          })),
+        },
+        400,
+      );
+    }
     return json(await execute(auth.userId, auth.token, parsed.data));
   }).catch(errorResponse);
 });

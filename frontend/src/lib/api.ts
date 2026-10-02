@@ -74,11 +74,29 @@ export type ActionResult = {
   acknowledged_at?: string;
 };
 
+export async function formatApiError(error: unknown): Promise<string> {
+  const fallback = error instanceof Error ? error.message : "API request failed";
+  const context = (error as { context?: unknown } | null)?.context;
+  if (!(context instanceof Response)) return fallback;
+
+  try {
+    const payload = (await context.clone().json()) as {
+      details?: Array<{ message?: string; path?: Array<string | number> }>;
+    };
+    const details = payload.details
+      ?.map(({ message, path }) => `${path?.join(".") || "request"}: ${message || "invalid value"}`)
+      .join("; ");
+    return details ? `${fallback}: ${details}` : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 async function invoke<T>(functionName: string, body: unknown): Promise<T> {
   const { data, error } = await supabase.functions.invoke<T>(functionName, {
     body: body as Record<string, unknown>,
   });
-  if (error) throw new Error(error.message || "API request failed");
+  if (error) throw new Error(await formatApiError(error));
   if (data === undefined) throw new Error("API returned no data");
   return data as T;
 }

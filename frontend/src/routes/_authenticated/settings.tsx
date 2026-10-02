@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Shell, Panel } from "@/components/deadhand/Shell";
 import { useOperator } from "@/hooks/use-operator";
 import { operatorApi } from "@/lib/api";
+import { setPinsValidationMessage } from "@/lib/schemas";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
@@ -25,6 +26,12 @@ function Settings() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    const validationMessage = setPinsValidationMessage(f);
+    if (validationMessage) {
+      toast.error(validationMessage);
+      return;
+    }
+
     try {
       const r = await operatorApi.action({ action: "setPins", ...f });
       if (r.ok) {
