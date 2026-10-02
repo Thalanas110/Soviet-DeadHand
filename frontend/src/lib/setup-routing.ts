@@ -6,3 +6,14 @@ export async function loadSetupDestination(): Promise<"/setup" | "/console"> {
   const [snapshot, contacts] = await Promise.all([operatorApi.read(), contactsApi.list()]);
   return hasRequiredSetup(deriveSetupReadiness(snapshot, contacts)) ? "/console" : "/setup";
 }
+
+let setupDestinationPromise: Promise<"/setup" | "/console"> | null = null;
+
+export function loadSetupDestinationOnce(): Promise<"/setup" | "/console"> {
+  if (!setupDestinationPromise) {
+    setupDestinationPromise = loadSetupDestination().finally(() => {
+      setupDestinationPromise = null;
+    });
+  }
+  return setupDestinationPromise;
+}

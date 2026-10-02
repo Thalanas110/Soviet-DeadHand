@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { loadSetupDestination } from "@/lib/setup-routing";
+import { loadSetupDestination, loadSetupDestinationOnce } from "@/lib/setup-routing";
 
 const { action, read, list } = vi.hoisted(() => ({
   action: vi.fn(),
@@ -33,5 +33,18 @@ describe("post-auth destination", () => {
     list.mockResolvedValue([{ authorized: true }]);
 
     await expect(loadSetupDestination()).resolves.toBe("/console");
+  });
+
+  it("shares one in-flight destination lookup across callers", async () => {
+    action.mockResolvedValue({ ok: true });
+    read.mockResolvedValue({ profile: { pins_configured: false }, devices: [] });
+    list.mockResolvedValue([]);
+
+    const first = loadSetupDestinationOnce();
+    const second = loadSetupDestinationOnce();
+
+    expect(first).toBe(second);
+    await expect(first).resolves.toBe("/setup");
+    expect(action).toHaveBeenCalledTimes(1);
   });
 });
