@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-export const pinSchema = z.string().regex(/^\d{4,8}$/, "PIN must be 4–8 digits");
+export const passwordSchema = z
+  .string()
+  .min(8, "Password must be 8–64 characters")
+  .max(64, "Password must be 8–64 characters");
 
 export const locationSchema = z.object({
   lat: z.number().min(-90).max(90),
@@ -23,13 +26,13 @@ export type Telemetry = z.infer<typeof telemetrySchema>;
 
 export const checkInSchema = telemetrySchema.extend({
   deviceId: z.string().uuid(),
-  pin: pinSchema,
+  pin: passwordSchema,
 });
 
 export const deviceTelemetrySchema = telemetrySchema; // posted by token-authenticated devices / wearable bridge
 
 export const setPinsSchema = z
-  .object({ current: z.string().max(8).optional(), checkin: pinSchema, duress: pinSchema })
+  .object({ current: z.string().max(64).optional(), checkin: passwordSchema, duress: passwordSchema })
   .refine((v) => v.checkin !== v.duress, {
     message: "Duress PIN must differ from check-in PIN",
     path: ["duress"],

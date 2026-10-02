@@ -1,8 +1,9 @@
 import { z } from "https://esm.sh/zod@3.25.76";
 
-export const pinSchema = z
+export const passwordSchema = z
   .string()
-  .regex(/^\d{4,8}$/, "PIN must be 4-8 digits");
+  .min(8, "Password must be 8-64 characters")
+  .max(64, "Password must be 8-64 characters");
 
 export const locationSchema = z.object({
   lat: z.number().min(-90).max(90),
@@ -23,9 +24,9 @@ export const telemetrySchema = z.object({
 
 export const setPinsSchema = z
   .object({
-    current: z.string().max(8).optional(),
-    checkin: pinSchema,
-    duress: pinSchema,
+    current: z.string().max(64).optional(),
+    checkin: passwordSchema,
+    duress: passwordSchema,
   })
   .refine((value) => value.checkin !== value.duress, {
     message: "Duress PIN must differ from check-in PIN",
@@ -62,13 +63,13 @@ export const actionSchema = z.union([
   z.object({
     action: z.literal("setArmed"),
     armed: z.boolean(),
-    pin: pinSchema,
+    pin: passwordSchema,
   }),
-  z.object({ action: z.literal("standDown"), pin: pinSchema }),
+  z.object({ action: z.literal("standDown"), pin: passwordSchema }),
   z.object({
     action: z.literal("checkIn"),
     deviceId: z.string().uuid(),
-    pin: pinSchema,
+    pin: passwordSchema,
     ...telemetrySchema.shape,
   }),
   z.object({
