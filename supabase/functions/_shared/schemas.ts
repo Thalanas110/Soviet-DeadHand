@@ -29,7 +29,7 @@ export const setPinsSchema = z
     duress: passwordSchema,
   })
   .refine((value) => value.checkin !== value.duress, {
-    message: "Duress PIN must differ from check-in PIN",
+    message: "Duress password must differ from check-in password",
     path: ["duress"],
   });
 
@@ -57,7 +57,7 @@ export const actionSchema = z.union([
   z
     .object({ action: z.literal("setPins"), ...setPinsSchema.shape })
     .refine((value) => value.checkin !== value.duress, {
-      message: "Duress PIN must differ from check-in PIN",
+      message: "Duress password must differ from check-in password",
       path: ["duress"],
     }),
   z.object({

@@ -38,7 +38,7 @@ export const setPinsSchema = z
     duress: passwordSchema,
   })
   .refine((v) => v.checkin !== v.duress, {
-    message: "Duress PIN must differ from check-in PIN",
+    message: "Duress password must differ from check-in password",
     path: ["duress"],
   });
 
