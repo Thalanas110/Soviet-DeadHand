@@ -1,0 +1,50 @@
+# Guardian Protocol
+
+DEAD HAND — FULL PROTOCOL v1
+Build Dead Hand as a Supabase-only personal safety monitoring and emergency escalation system.
+Stack:
+React
+TypeScript
+Vite
+Supabase Auth
+Supabase PostgreSQL
+Supabase Row Level Security
+Supabase Edge Functions
+Supabase Realtime
+Supabase scheduled jobs / Cron
+Zod
+Vitest
+Playwright
+
+DO NOT create ExpressJS, NestJS, Fastify, Render backend, or any separate API server. Supabase is the backend.
+Remember to write all database migrations in SQL files under supabase/migrations/.
+
+Aesthetics & Theme:
+Sovietized militaristic-style dead hand system (Комплекс «Периметр»). Cold War command bunker aesthetic with phosphor amber / radar green CRT readouts, Soviet military nomenclature, tactile arming toggles, and status indicators, while strictly functioning as a defensive, safety-only personal emergency monitoring and escalation system.
+
+Layout & Form Factor:
+Mobile-first design. Provide both a mobile tactical handheld dashboard (one-handed rapid check-in, duress silent alarm toggle, countdown ticker, encrypted link indicators) and a responsive desktop command post console.
+
+Cryptography:
+All sensitive data (telemetry, coordinates, biometric samples, contact info) must be encrypted with AES-256-GCM using Web Crypto API.
+
+Core Doctrine & Rules:
+1. The server (Supabase/PostgreSQL) is authoritative. React is UI only and never directly mutates safety state.
+2. Every complete safety heartbeat requires a valid location sample. Without location, it is incomplete diagnostic telemetry only and must not update last_complete_heartbeat_at.
+3. Monotonic sequence numbers per device to prevent replay attacks. Server timestamps (received_at) govern watchdog timing.
+4. Core state machine: NORMAL -> ARE_YOU_ALIVE (72h server timer) -> PROLONGED_NO_RESPONSE (48h server timer) -> CRITICAL_UNRESOLVED (EXECUTE_EMERGENCY_NOTIFICATION_CASCADE / RELEASE_ALL_MISSILES) -> RESOLVED.
+5. Covert duress code / silent alarm that displays safe confirmation to hostiles while immediately escalating to emergency dispatch.
+6. Support Huawei wearable telemetry loss and phone heartbeat loss correlation.
+7. Idempotent notification cascade dispatching to pre-authorized prioritized emergency contacts with immutable last-known telemetry snapshots.
+
+## Development
+
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+
+```sh
+git clone <this-repository-url>
+cd <repository-name>
+cd frontend
+npm i
+npm run dev
+```

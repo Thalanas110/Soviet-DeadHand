@@ -1,0 +1,119 @@
+DEAD HAND - PSEUDOCODE
+Mirrors deadhand.jff (q0..q4). Event symbols in [brackets] match the JFLAP alphabet.
+
+=====================================================================
+CONSTANTS
+=====================================================================
+SILENCE_LIMIT   = 24h     // q0 -> q1
+Q1_WINDOW       = 72h     // q1 -> q2
+Q2_WINDOW       = 48h     // q2 -> q3 (final verification)
+Q3_CYCLE        = 120h    // q3 / q4 re-check period
+TICK            = 1 min   // main loop period
+
+=====================================================================
+STATE
+=====================================================================
+state        = Q0
+last_signal  = now()      // last time phone OR watch reported alive
+window_start = null       // when the current q1 / q2 window began
+cycle_start  = null       // when the current q3 / q4 cycle began
+
+=====================================================================
+INPUT HELPERS
+=====================================================================
+FUNCTION heartbeat_ok():
+    // [h] watch alive AND phone active AND person alive
+    RETURN watch_alive() AND phone_active() AND alive_check()
+
+FUNCTION classify_response(entry):
+    // Returns one of: NONE, CORRECT [p], DURESS [d], UNSAFE [u]
+    IF entry == null:                       RETURN NONE
+    IF entry.type == "UNSAFE_REPORT":       RETURN UNSAFE
+    IF constant_time_equals(entry.pass, DURESS_PASS):       RETURN DURESS
+    IF constant_time_equals(entry.pass, NON_DURESS_PASS):   RETURN CORRECT
+    RETURN DURESS     // wrong password is treated as silent duress, never "try again"
+
+// Duress and correct entries must produce IDENTICAL UI, timing, and wording.
+FUNCTION show_confirmation():
+    display("Check-in received")
+
+=====================================================================
+TRANSITION HELPER
+=====================================================================
+FUNCTION go(new_state):
+    state = new_state
+    SWITCH new_state:
+        Q0: window_start = null; cycle_start = null
+        Q1: window_start = now(); send_quiet_ping("ARE YOU SAFE?")
+        Q2: window_start = now(); send_where_are_you(last_known_location, planned_route)
+        Q3: cycle_start  = now(); fire_all_missiles(); require_password_mode(ON)
+        Q4: cycle_start  = now(); liveliness_alert(); check_duress_and_nonduress(ON)
+
+=====================================================================
+MAIN LOOP
+=====================================================================
+LOOP every TICK:
+
+    IF heartbeat_ok(): last_signal = now()
+    resp = classify_response(poll_user_entry())
+    IF resp != NONE: show_confirmation()
+
+    SWITCH state:
+
+    //-------------------------------------------------------------
+    CASE Q0:    // initial: monitoring
+        IF heartbeat_ok():                              // [h]
+            stay
+        ELSE IF now() - last_signal < SILENCE_LIMIT:    // [b] brief outage < 24h
+            stay
+        ELSE:                                           // [s] 24h+ silence
+            go(Q1)
+
+    //-------------------------------------------------------------
+    CASE Q1:    // ARE YOU SAFE?
+        IF resp == DURESS:                              // [d]
+            go(Q3)                                      // quiet escalation, no cancel
+        ELSE IF resp == CORRECT OR heartbeat_ok():      // [p] or [h]
+            go(Q0)
+        ELSE IF now() - window_start >= Q1_WINDOW:      // [t] 72h done, no response
+            go(Q2)
+        ELSE:                                           // [w] 72h not done
+            stay
+
+    //-------------------------------------------------------------
+    CASE Q2:    // WHERE ARE YOU?  (exits only on a response)
+        IF resp == CORRECT:                             // [p]
+            go(Q0)
+        ELSE IF resp == DURESS:                         // [d]
+            go(Q3)
+        ELSE IF now() - window_start >= Q2_WINDOW:      // [t] final 48h, no response
+            go(Q3)
+        ELSE:                                           // [w] 48h not done
+            stay
+
+    //-------------------------------------------------------------
+    CASE Q3:    // ATTENTION! all missiles already sent
+        IF resp == CORRECT OR resp == DURESS:           // [p] or [d]
+            go(Q4)
+        ELSE IF now() - cycle_start >= Q3_CYCLE:        // [t] 120h+, no response
+            cycle_start = now()                         // loop, re-send reminders
+            resend_attention_alert()
+        ELSE:
+            stay
+
+    //-------------------------------------------------------------
+    CASE Q4:    // LIVELINESS ALERT! missiles sent, classifying response
+        IF resp == CORRECT:                             // [p] rescued
+            // OPTIONAL: send_stand_down("false alarm / rescued") to everyone notified.
+            // Duress path never sends this.
+            go(Q1)
+        ELSE IF resp == DURESS OR resp == UNSAFE:       // [d] or [u]
+            cycle_start = now()
+            keep_silent_monitoring()                    // location pings, no visible change
+            stay
+        ELSE:
+            stay
+
+=====================================================================
+ACCEPTING STATES (from JFLAP): Q0, Q3, Q4
+=====================================================================
