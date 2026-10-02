@@ -81,8 +81,8 @@ function Landing() {
             </Link>
           </div>
           <ul className="mt-10 grid gap-3 text-xs uppercase tracking-wider text-muted-foreground sm:grid-cols-2">
-            <li className="setup-rule">Server-authoritative timers</li>
-            <li className="setup-rule">AES-256-GCM sealed telemetry</li>
+            <li className="setup-rule">Very thin client</li>
+            <li className="setup-rule">Secured operatonal zones</li>
             <li className="setup-rule">Covert duress code</li>
             <li className="setup-rule">Replay-proof sequencing</li>
           </ul>
