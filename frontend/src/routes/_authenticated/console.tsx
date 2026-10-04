@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { Shell, Panel, Lamp, fmtAgo, fmtCountdown } from "@/components/deadhand/Shell";
 import { PinPad } from "@/components/deadhand/PinPad";
 import { useOperator, useNow } from "@/hooks/use-operator";
-import { operatorApi } from "@/lib/api";
+import { operatorApi, type OperatorSnapshot } from "@/lib/api";
+import { resolveArmDisarmFeedback } from "@/lib/arm-disarm-feedback";
 import { collectTelemetry, getHandsetId, setHandsetId } from "@/lib/telemetry";
 import {
   ALERT_CYCLE_HOURS,
@@ -89,9 +90,9 @@ function Console() {
                 : "Rejected",
           );
       } else {
-        const r = await operatorApi.action({ action: "setArmed", armed: pad === "arm", pin });
-        if (r.ok) toast.success(pad === "arm" ? "ВЗВЕДЕНО · Armed" : "Disarmed");
-        else
+        const requestedArmed = pad === "arm";
+        const r = await operatorApi.action({ action: "setArmed", armed: requestedArmed, pin });
+        if (!r.ok) {
           toast.error(
             r.error === "PINS_NOT_CONFIGURED"
               ? "Set your PINs under Codes first"
@@ -99,6 +100,25 @@ function Console() {
                 ? "Check in before disarming"
                 : "Rejected",
           );
+          return;
+        }
+
+        await qc.invalidateQueries({ queryKey: ["operator"] });
+        const refreshed = qc.getQueryData<OperatorSnapshot>(["operator"]);
+        const feedback = resolveArmDisarmFeedback({
+          requestedArmed,
+          actionOk: r.ok,
+          status: refreshed?.status,
+        });
+        toast.success(
+          feedback === "armed"
+            ? "ВЗВЕДЕНО · Armed"
+            : feedback === "disarmed"
+              ? "Disarmed"
+              : "Signal received",
+        );
+        setPad(null);
+        return;
       }
       qc.invalidateQueries({ queryKey: ["operator"] });
       setPad(null);
