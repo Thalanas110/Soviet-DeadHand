@@ -1162,6 +1162,132 @@
   }
 }
 
+/* Reference composition: the emblem belongs to the page atmosphere, not the hero grid. */
+.landing-aura {
+  background: radial-gradient(
+    ellipse 90% 82% at 52% 18%,
+    rgba(255, 59, 48, 0.18),
+    transparent 78%
+  );
+}
+
+.landing-hero {
+  display: grid;
+  min-height: 100vh;
+  border: 0;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.landing-hero__copy {
+  padding-right: 0;
+}
+
+.landing-hero__panel {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
+}
+
+.landing-hero__panel-head,
+.landing-hero__panel-foot {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.landing-hero__panel-head {
+  border-bottom: 1px solid var(--border);
+}
+
+.landing-hero__panel-head h2 {
+  margin-top: 0.6rem;
+  color: var(--foreground);
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 3vw, 2.2rem);
+  font-weight: 500;
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.landing-hero__panel-head > span {
+  color: var(--signal-red);
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+}
+
+.landing-hero__system-row {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding: 1.1rem 1.25rem;
+}
+
+.landing-hero__system-row > span {
+  color: var(--signal-red);
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.landing-hero__system-row strong {
+  color: var(--foreground);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.landing-hero__system-row p {
+  margin-top: 0.4rem;
+  color: var(--muted-foreground);
+  font-size: 0.7rem;
+  line-height: 1.6;
+}
+
+.landing-hero__panel-foot {
+  align-items: flex-start;
+  color: var(--muted-foreground);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.landing-hero__panel-foot span:first-child {
+  color: var(--signal-red);
+}
+
+.landing-reference-note {
+  margin-top: 1.25rem;
+  color: var(--muted-foreground);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  .landing-hero {
+    min-height: 0;
+    padding-top: 2rem;
+  }
+
+  .landing-hero__panel-foot {
+    display: block;
+  }
+
+  .landing-hero__panel-foot span {
+    display: block;
+  }
+
+  .landing-hero__panel-foot span + span {
+    margin-top: 0.5rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

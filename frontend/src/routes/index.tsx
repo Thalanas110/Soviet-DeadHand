@@ -48,87 +48,105 @@ const CAPABILITIES = [
 
 function Landing() {
   return (
-    <main className="landing-page relative mx-auto min-h-screen max-w-7xl px-4 py-6 md:px-8 md:py-10">
+    <main className="landing-page relative min-h-screen overflow-hidden">
+      <div className="landing-aura pointer-events-none absolute inset-0 z-0" />
+      <img
+        src={EMBLEM_SRC}
+        alt=""
+        aria-hidden="true"
+        className="landing-emblem pointer-events-none fixed bottom-[-100px] right-[-60px] z-0 w-[430px] rotate-[-12deg] opacity-[0.08] grayscale mix-blend-screen sm:w-[560px]"
+      />
       <ReadinessRail />
 
-      <header className="landing-header">
-        <div className="landing-brand">
-          <span className="landing-brand__mark" aria-hidden="true">
-            01
-          </span>
-          <div>
-            <p className="font-display text-sm uppercase tracking-[0.3em] text-primary">
-              Dead Hand
+      <section
+        className="landing-hero relative z-10 mx-auto grid min-h-screen max-w-7xl gap-16 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[1.04fr_.96fr] lg:items-center lg:gap-24 lg:py-24"
+        aria-labelledby="hero-title"
+      >
+        <div>
+          <header className="landing-header">
+            <div className="landing-brand">
+              <span className="landing-brand__mark" aria-hidden="true">
+                01
+              </span>
+              <div>
+                <p className="font-display text-sm uppercase tracking-[0.3em] text-primary">
+                  Dead Hand
+                </p>
+                <p className="mt-1 text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
+                  Personal Safety Watchdog
+                </p>
+              </div>
+            </div>
+            <nav className="landing-nav" aria-label="Landing page">
+              <a href="#system-map">How it works</a>
+              <Link to="/auth">Sign in</Link>
+            </nav>
+          </header>
+
+          <div className="landing-hero__copy">
+            <div className="landing-index-line">
+              <span>01 / 03</span>
+              <span>Personal safety system</span>
+            </div>
+            <h1 id="hero-title" className="landing-hero__title">
+              Safety is a system.
+            </h1>
+            <p className="landing-hero__lede">
+              Dead Hand watches for missed check-ins, device silence, and configured distress
+              signals - then follows the response path you choose.
             </p>
-            <p className="mt-1 text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
-              Personal Safety Watchdog
+            <div className="landing-actions">
+              <Link to="/auth" className="landing-action landing-action--primary">
+                Begin setup
+              </Link>
+              <a href="#system-map" className="landing-action landing-action--quiet">
+                See how it works
+              </a>
+            </div>
+            <dl className="landing-proof-strip">
+              <div>
+                <dt>Setup</dt>
+                <dd>/setup</dd>
+              </div>
+              <div>
+                <dt>Dashboard</dt>
+                <dd>/console</dd>
+              </div>
+              <div>
+                <dt>Response states</dt>
+                <dd>Q0-Q4</dd>
+              </div>
+            </dl>
+            <p className="landing-reference-note">
+              Historical visual reference. No political affiliation.
             </p>
           </div>
         </div>
-        <nav className="landing-nav" aria-label="Landing page">
-          <a href="#system-map">How it works</a>
-          <Link to="/auth">Sign in</Link>
-        </nav>
-      </header>
 
-      <section className="landing-hero" aria-labelledby="hero-title">
-        <div className="landing-hero__copy">
-          <div className="landing-index-line">
-            <span>01 / 03</span>
-            <span>Personal safety system</span>
+        <div className="landing-hero__panel">
+          <div className="landing-hero__panel-head">
+            <div>
+              <p className="landing-kicker">Response path</p>
+              <h2>Escalation stays explicit.</h2>
+            </div>
+            <span>Q0-Q4</span>
           </div>
-          <h1 id="hero-title" className="landing-hero__title">
-            Safety is a system.
-          </h1>
-          <p className="landing-hero__lede">
-            Dead Hand watches for missed check-ins, device silence, and configured distress signals
-            - then follows the response path you choose.
-          </p>
-          <div className="landing-actions">
-            <Link to="/auth" className="landing-action landing-action--primary">
-              Begin setup
-            </Link>
-            <a href="#system-map" className="landing-action landing-action--quiet">
-              See how it works
-            </a>
+          <div className="landing-hero__system-list">
+            {AUTOMATON_STAGES.slice(0, 4).map(([code, title, description]) => (
+              <div key={code} className="landing-hero__system-row">
+                <span>{code}</span>
+                <div>
+                  <strong>{title}</strong>
+                  <p>{description}</p>
+                </div>
+              </div>
+            ))}
           </div>
-          <dl className="landing-proof-strip">
-            <div>
-              <dt>Setup</dt>
-              <dd>/setup</dd>
-            </div>
-            <div>
-              <dt>Dashboard</dt>
-              <dd>/console</dd>
-            </div>
-            <div>
-              <dt>Response states</dt>
-              <dd>Q0-Q4</dd>
-            </div>
-          </dl>
+          <div className="landing-hero__panel-foot">
+            <span>Safety-only system</span>
+            <span>Not a replacement for emergency services.</span>
+          </div>
         </div>
-
-        <aside className="landing-monument" aria-labelledby="emblem-title">
-          <div className="landing-monument__topline">
-            <span id="emblem-title">Historical visual reference</span>
-            <span>Object 01 / 01</span>
-          </div>
-          <div className="landing-monument__field">
-            <span className="landing-monument__axis" aria-hidden="true" />
-            <img
-              className="landing-monument__image"
-              src={EMBLEM_SRC}
-              alt="Historical red emblem used as a visual reference for the product identity"
-            />
-            <span className="landing-monument__stamp" aria-hidden="true">
-              SDH
-            </span>
-          </div>
-          <div className="landing-monument__caption">
-            <strong>Safety-only system</strong>
-            <span>Historical visual reference. No political affiliation.</span>
-          </div>
-        </aside>
       </section>
 
       <section

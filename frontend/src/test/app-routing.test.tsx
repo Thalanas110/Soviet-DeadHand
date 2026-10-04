@@ -49,7 +49,9 @@ describe("App routing", () => {
     expect(landing).toContain("c4ff83c5eadddc1a6627fbce57d559e0.png");
     expect(landing).toContain("Begin setup");
     expect(landing).toContain("Safety is a system.");
-    expect(landing).toContain("landing-monument");
+    expect(landing).toContain("landing-aura");
+    expect(landing).toContain("landing-emblem");
+    expect(landing).toContain("landing-hero__panel");
     expect(landing).toContain("landing-capability-grid");
     expect(landing).toContain("Q0");
     expect(landing).toContain("Q4");
@@ -58,10 +60,11 @@ describe("App routing", () => {
   it("places the emblem in the lower-right red haze background treatment", () => {
     const styles = readFileSync("src/styles.css", "utf8");
 
-    expect(styles).toContain(".landing-monument");
+    expect(styles).toContain(".landing-aura");
     expect(styles).toContain("radial-gradient");
     expect(styles).toContain("transform: rotate(7deg)");
     expect(styles).toContain("bottom: -3rem");
+    expect(styles).toContain("position: absolute");
   });
 
   it("renders explicit Q0 through Q4 setup progression", () => {
