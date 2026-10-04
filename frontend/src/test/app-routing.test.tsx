@@ -44,9 +44,12 @@ describe("App routing", () => {
     expect(shell).toContain('en: "Dashboard"');
     expect(shell.match(/en: "Dashboard"/g)).toHaveLength(1);
     expect(landing).toContain('to="/auth"');
-    expect(landing).toContain("Комплекс");
-    expect(landing).toContain("Настройка");
+    expect(landing).toContain("Personal safety, under your control");
+    expect(landing).toContain("Historical visual reference. No political affiliation.");
     expect(landing).toContain("c4ff83c5eadddc1a6627fbce57d559e0.png");
+    expect(landing).toContain("Begin setup");
+    expect(landing).toContain("Q0");
+    expect(landing).toContain("Q4");
   });
 
   it("renders explicit Q0 through Q4 setup progression", () => {
