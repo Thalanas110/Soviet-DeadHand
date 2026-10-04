@@ -40,9 +40,15 @@ const SETUP_STAGES = [
   ["04", "Wearable bridge", "Optional connected device", "Recommended"],
 ] as const;
 
+const CAPABILITIES = [
+  ["01", "Check-ins", "Set the moments that should receive a response from you."],
+  ["02", "Connected devices", "Keep a phone or wearable in the monitoring loop."],
+  ["03", "Trusted contacts", "Choose who is notified when the response path escalates."],
+] as const;
+
 function Landing() {
   return (
-    <main className="landing-page relative mx-auto min-h-screen max-w-6xl px-4 py-6 md:px-8 md:py-10">
+    <main className="landing-page relative mx-auto min-h-screen max-w-7xl px-4 py-6 md:px-8 md:py-10">
       <ReadinessRail />
 
       <header className="landing-header">
@@ -59,36 +65,34 @@ function Landing() {
             </p>
           </div>
         </div>
-        <Link
-          to="/auth"
-          className="border border-primary px-3 py-1.5 text-xs uppercase tracking-widest text-primary hover:bg-primary hover:text-primary-foreground"
-        >
-          Sign in
-        </Link>
+        <nav className="landing-nav" aria-label="Landing page">
+          <a href="#system-map">How it works</a>
+          <Link to="/auth">Sign in</Link>
+        </nav>
       </header>
 
       <section className="landing-hero" aria-labelledby="hero-title">
         <div className="landing-hero__copy">
-          <p className="landing-kicker">Personal safety / setup</p>
-          <h1
-            id="hero-title"
-            className="mt-5 max-w-3xl font-display text-5xl uppercase leading-[0.92] text-primary md:text-8xl"
-          >
-            Personal safety, under your control.
+          <div className="landing-index-line">
+            <span>01 / 03</span>
+            <span>Personal safety system</span>
+          </div>
+          <h1 id="hero-title" className="landing-hero__title">
+            Safety is a system.
           </h1>
-          <p className="mt-7 max-w-xl text-base leading-relaxed text-foreground/85">
+          <p className="landing-hero__lede">
             Dead Hand watches for missed check-ins, device silence, and configured distress signals
             - then follows the response path you choose.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              to="/auth"
-              className="bg-primary px-6 py-3 font-display text-sm uppercase tracking-widest text-primary-foreground hover:brightness-110"
-            >
+          <div className="landing-actions">
+            <Link to="/auth" className="landing-action landing-action--primary">
               Begin setup
             </Link>
+            <a href="#system-map" className="landing-action landing-action--quiet">
+              See how it works
+            </a>
           </div>
-          <dl className="landing-facts mt-10">
+          <dl className="landing-proof-strip">
             <div>
               <dt>Setup</dt>
               <dd>/setup</dd>
@@ -98,98 +102,109 @@ function Landing() {
               <dd>/console</dd>
             </div>
             <div>
-              <dt>Response path</dt>
+              <dt>Response states</dt>
               <dd>Q0-Q4</dd>
             </div>
           </dl>
         </div>
 
-        <section className="landing-seal" aria-labelledby="emblem-title">
-          <div className="landing-seal__header">
+        <aside className="landing-monument" aria-labelledby="emblem-title">
+          <div className="landing-monument__topline">
             <span id="emblem-title">Historical visual reference</span>
-            <span>01 / 01</span>
+            <span>Object 01 / 01</span>
           </div>
-          <div className="landing-seal__art">
-            <span
-              className="landing-seal__crosshair landing-seal__crosshair--top"
-              aria-hidden="true"
-            />
+          <div className="landing-monument__field">
+            <span className="landing-monument__axis" aria-hidden="true" />
             <img
+              className="landing-monument__image"
               src={EMBLEM_SRC}
               alt="Historical red emblem used as a visual reference for the product identity"
             />
-            <span
-              className="landing-seal__crosshair landing-seal__crosshair--bottom"
-              aria-hidden="true"
-            />
+            <span className="landing-monument__stamp" aria-hidden="true">
+              SDH
+            </span>
           </div>
-          <div className="landing-seal__footer">
+          <div className="landing-monument__caption">
             <strong>Safety-only system</strong>
             <span>Historical visual reference. No political affiliation.</span>
           </div>
-        </section>
+        </aside>
       </section>
 
-      <section className="landing-section py-10" aria-labelledby="setup-title">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+      <section
+        id="system-map"
+        className="landing-section landing-capabilities"
+        aria-labelledby="capabilities-title"
+      >
+        <div className="landing-section__heading">
           <div>
-            <p className="landing-kicker">Setup path</p>
-            <h2
-              id="setup-title"
-              className="mt-2 font-display text-xl uppercase tracking-widest text-primary"
-            >
-              Set up the safety system
-            </h2>
+            <p className="landing-kicker">System map / 02</p>
+            <h2 id="capabilities-title">What it watches</h2>
           </div>
-          <p className="max-w-sm text-xs leading-relaxed text-muted-foreground">
-            Complete the required items before opening the Dashboard.
+          <p>One control surface for the signals that matter when you cannot safely communicate.</p>
+        </div>
+        <ol className="landing-capability-grid">
+          {CAPABILITIES.map(([code, title, description]) => (
+            <li key={code} className="landing-capability">
+              <span className="landing-capability__code">{code}</span>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="landing-section landing-response" aria-labelledby="response-title">
+        <div className="landing-section__heading">
+          <div>
+            <p className="landing-kicker">Response path / 03</p>
+            <h2 id="response-title">Escalation stays explicit.</h2>
+          </div>
+          <p>
+            Q0-Q4 is the product model: each state has a clear condition and a configured next step.
           </p>
         </div>
-
-        <div className="mt-6 grid gap-6 md:grid-cols-[1fr_1.25fr]">
-          <div className="landing-panel p-5">
-            <ol className="landing-setup-map">
-              {SETUP_STAGES.map(([code, title, description, requirement]) => (
-                <li key={code}>
-                  <span className="landing-setup-map__code">{code}</span>
-                  <span>
-                    <span className="block text-xs text-primary">{title}</span>
-                    <span className="mt-1 block text-[10px] uppercase tracking-widest text-muted-foreground">
-                      {description}
-                    </span>
-                  </span>
-                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                    {requirement}
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          <div>
-            <h2 className="font-display text-xl uppercase tracking-widest text-primary">
-              How the response path works
-            </h2>
-            <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-              {AUTOMATON_STAGES.map(([code, title, description], index) => (
-                <li key={code} className="landing-stage-card">
-                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                    {code}
-                  </div>
-                  <div
-                    className={`mt-1 font-display text-lg ${index >= 3 ? "text-destructive" : index === 0 ? "text-radar" : "text-primary"}`}
-                  >
-                    {title}
-                  </div>
-                  <p className="mt-2 text-xs leading-relaxed text-foreground/75">{description}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
+        <ol className="landing-response-path">
+          {AUTOMATON_STAGES.map(([code, title, description], index) => (
+            <li
+              key={code}
+              className={
+                index >= 3 ? "landing-response-path__item is-alert" : "landing-response-path__item"
+              }
+            >
+              <span className="landing-response-path__code">{code}</span>
+              <div>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
       </section>
 
-      <footer className="landing-footer border-t border-border py-6 text-[10px] uppercase tracking-widest text-muted-foreground">
+      <section className="landing-section landing-setup" aria-labelledby="setup-title">
+        <div className="landing-section__heading">
+          <div>
+            <p className="landing-kicker">Setup path</p>
+            <h2 id="setup-title">Build your safety system.</h2>
+          </div>
+          <p>Complete the required items before opening the Dashboard.</p>
+        </div>
+        <ol className="landing-setup-grid">
+          {SETUP_STAGES.map(([code, title, description, requirement]) => (
+            <li key={code} className="landing-setup-item">
+              <span className="landing-setup-item__code">{code}</span>
+              <div>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </div>
+              <span className="landing-setup-item__status">{requirement}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <footer className="landing-footer">
         Safety-only system. Not a replacement for calling emergency services.
       </footer>
     </main>

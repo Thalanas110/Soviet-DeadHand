@@ -44,10 +44,13 @@ describe("App routing", () => {
     expect(shell).toContain('en: "Dashboard"');
     expect(shell.match(/en: "Dashboard"/g)).toHaveLength(1);
     expect(landing).toContain('to="/auth"');
-    expect(landing).toContain("Personal safety, under your control");
+    expect(landing).toContain("Safety is a system.");
     expect(landing).toContain("Historical visual reference. No political affiliation.");
     expect(landing).toContain("c4ff83c5eadddc1a6627fbce57d559e0.png");
     expect(landing).toContain("Begin setup");
+    expect(landing).toContain("Safety is a system.");
+    expect(landing).toContain("landing-monument");
+    expect(landing).toContain("landing-capability-grid");
     expect(landing).toContain("Q0");
     expect(landing).toContain("Q4");
   });
