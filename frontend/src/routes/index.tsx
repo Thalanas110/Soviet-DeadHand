@@ -51,7 +51,9 @@ function Landing() {
             01
           </span>
           <div>
-            <p className="font-display text-sm uppercase tracking-[0.3em] text-primary">Dead Hand</p>
+            <p className="font-display text-sm uppercase tracking-[0.3em] text-primary">
+              Dead Hand
+            </p>
             <p className="mt-1 text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
               Personal Safety Watchdog
             </p>
@@ -75,8 +77,8 @@ function Landing() {
             Personal safety, under your control.
           </h1>
           <p className="mt-7 max-w-xl text-base leading-relaxed text-foreground/85">
-            Dead Hand watches for missed check-ins, device silence, and configured distress
-            signals - then follows the response path you choose.
+            Dead Hand watches for missed check-ins, device silence, and configured distress signals
+            - then follows the response path you choose.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
@@ -132,7 +134,10 @@ function Landing() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="landing-kicker">Setup path</p>
-            <h2 id="setup-title" className="mt-2 font-display text-xl uppercase tracking-widest text-primary">
+            <h2
+              id="setup-title"
+              className="mt-2 font-display text-xl uppercase tracking-widest text-primary"
+            >
               Set up the safety system
             </h2>
           </div>

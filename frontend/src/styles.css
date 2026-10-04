@@ -491,6 +491,84 @@
   animation: sweep 4s linear infinite;
 }
 
+/* Landing page: an editorial specimen inside the shared Industrial system. */
+.landing-header,
+.landing-hero,
+.landing-section,
+.landing-footer {
+  border-color: var(--border);
+}
+
+.landing-hero {
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  padding: 4rem 0 5rem;
+}
+
+.landing-hero__copy {
+  min-width: 0;
+}
+
+.landing-hero h1 {
+  max-width: 22ch;
+}
+
+.landing-seal {
+  min-height: 25rem;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  box-shadow: none;
+}
+
+.landing-seal__header,
+.landing-seal__footer {
+  flex-wrap: wrap;
+}
+
+.landing-seal__art {
+  min-height: 21rem;
+}
+
+.landing-panel,
+.landing-stage-card {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  box-shadow: none;
+}
+
+.landing-stage-card {
+  position: relative;
+  padding: 1rem;
+}
+
+.landing-page a:focus-visible {
+  outline: 2px solid var(--signal-red);
+  outline-offset: 3px;
+}
+
+@media (min-width: 768px) {
+  .landing-hero {
+    grid-template-columns: minmax(0, 1.05fr) minmax(22rem, 0.95fr);
+    align-items: center;
+    gap: 4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-facts div + div {
+    border-top: 1px solid var(--border);
+    border-left: 0;
+  }
+
+  .landing-seal__footer {
+    align-items: flex-start;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
