@@ -1044,6 +1044,124 @@
   }
 }
 
+/* The emblem is atmosphere in the hero: low, cropped, tilted, and behind the copy. */
+.landing-hero {
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.landing-hero::before {
+  z-index: 0;
+  opacity: 0.7;
+}
+
+.landing-hero__copy {
+  z-index: 2;
+}
+
+.landing-monument {
+  position: absolute;
+  right: -5rem;
+  bottom: -3rem;
+  z-index: 1;
+  width: min(56vw, 44rem);
+  height: min(50rem, 108%);
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  transform: rotate(7deg);
+  transform-origin: center center;
+  opacity: 0.82;
+  pointer-events: none;
+}
+
+.landing-monument::before {
+  position: absolute;
+  inset: 10% -18% -10%;
+  z-index: 0;
+  background: radial-gradient(
+    circle at 50% 58%,
+    rgba(255, 59, 48, 0.28),
+    rgba(255, 59, 48, 0.08) 42%,
+    transparent 70%
+  );
+  content: "";
+}
+
+.landing-monument__topline {
+  position: absolute;
+  inset: 1rem 0 auto;
+  z-index: 3;
+  border: 0;
+  opacity: 0.72;
+}
+
+.landing-monument__field {
+  position: absolute;
+  inset: 2.2rem 0 0;
+  z-index: 1;
+  min-height: 0;
+  border: 0;
+}
+
+.landing-monument__field::before,
+.landing-monument__field::after {
+  opacity: 0.28;
+}
+
+.landing-monument__axis {
+  inset: 2rem 0 auto 10%;
+  z-index: 2;
+  opacity: 0.8;
+}
+
+.landing-monument__image {
+  width: min(94%, 38rem);
+  transform: translateY(2rem);
+}
+
+.landing-monument__stamp {
+  right: 1rem;
+  bottom: 4rem;
+  opacity: 0.8;
+}
+
+.landing-monument__caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: block;
+  max-width: 15rem;
+  padding: 0;
+  text-align: right;
+  opacity: 0.85;
+}
+
+.landing-monument__caption strong,
+.landing-monument__caption span {
+  display: block;
+}
+
+@media (max-width: 700px) {
+  .landing-monument {
+    right: -9rem;
+    bottom: -4rem;
+    width: 29rem;
+    height: 30rem;
+    opacity: 0.48;
+  }
+
+  .landing-monument__topline {
+    display: none;
+  }
+
+  .landing-monument__caption {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

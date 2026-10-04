@@ -55,6 +55,15 @@ describe("App routing", () => {
     expect(landing).toContain("Q4");
   });
 
+  it("places the emblem in the lower-right red haze background treatment", () => {
+    const styles = readFileSync("src/styles.css", "utf8");
+
+    expect(styles).toContain(".landing-monument");
+    expect(styles).toContain("radial-gradient");
+    expect(styles).toContain("transform: rotate(7deg)");
+    expect(styles).toContain("bottom: -3rem");
+  });
+
   it("renders explicit Q0 through Q4 setup progression", () => {
     const setup = readFileSync("src/routes/_authenticated/setup.tsx", "utf8");
     for (const code of ["Q0", "Q1", "Q2", "Q3", "Q4"]) {
