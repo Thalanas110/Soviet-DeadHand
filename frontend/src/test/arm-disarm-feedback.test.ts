@@ -5,9 +5,9 @@ const status = (armed: boolean) => ({ armed });
 
 describe("arm/disarm feedback", () => {
   it("confirms arming only when the refreshed status is armed", () => {
-    expect(resolveArmDisarmFeedback({ requestedArmed: true, actionOk: true, status: status(true) })).toBe(
-      "armed",
-    );
+    expect(
+      resolveArmDisarmFeedback({ requestedArmed: true, actionOk: true, status: status(true) }),
+    ).toBe("armed");
   });
 
   it("confirms disarming only when the refreshed status is disarmed", () => {
